@@ -3,9 +3,9 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config';
 
-// 【要記入】ドメインが決まったら site を本番URLにする
+// 本番URL（ドメインは 2026-10-06 決定。取得は Cloudflare で後日）
 export default defineConfig({
-	site: 'https://example.com',
+	site: 'https://tatamu-hojin.com',
 	trailingSlash: 'always',
 	integrations: [mdx(), sitemap()],
 });
