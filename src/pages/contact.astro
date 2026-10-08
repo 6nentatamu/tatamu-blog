@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+import { CONTACT_FORM_URL, X_URL } from '../consts';
+const title = 'お問い合わせ';
+---
+
+<Base title={title} description="記事の誤りのご指摘・ご意見はこちらから。">
+	<main class="container prose">
+		<h1>{title}</h1>
+		<p>記事の誤りのご指摘やご意見は、下記のフォームからお送りください。</p>
+		<p>返信までに数日かかる場合があります。あらかじめご了承ください。</p>
+		<p>お預かりした個人情報の取り扱いについては、<a href="/privacy/">プライバシーポリシー</a>をご覧ください。</p>
+		{CONTACT_FORM_URL ? (
+			<p><a class="contact-button" href={CONTACT_FORM_URL} target="_blank" rel="noopener">お問い合わせフォームを開く</a></p>
+		) : (
+			<p><strong>フォームは準備中です。</strong></p>
+		)}
+		{X_URL && (
+			<p>X（旧Twitter）の<a href={X_URL} target="_blank" rel="noopener">DM</a>でもご連絡いただけます。</p>
+		)}
+	</main>
+</Base>
+
+<style>
+	.contact-button {
+		display: inline-block;
+		padding: 0.75rem 1.5rem;
+		border: 1px solid currentColor;
+		border-radius: 6px;
+		text-decoration: none;
+		font-weight: bold;
+	}
+</style>

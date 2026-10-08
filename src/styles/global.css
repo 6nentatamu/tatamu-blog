@@ -1,0 +1,176 @@
+/* モノトーン＋アクセント1色。スマホで読みやすいことを最優先にする。 */
+
+:root {
+	--bg: #ffffff;
+	--text: #1f2328;
+	--muted: #5c636b;
+	--line: #e3e5e8;
+	--subtle: #f4f5f6;
+	--accent: #1f6f6a;
+	--link: #1f6f6a;
+	--measure: 720px;
+	--wide: 1080px;
+	color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #16181b;
+		--text: #e6e8eb;
+		--muted: #9aa1a9;
+		--line: #2c3035;
+		--subtle: #202327;
+		--accent: #3fa79f;
+		--link: #5cc1b9;
+		color-scheme: dark;
+	}
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--text);
+	font-family:
+		'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Yu Gothic UI', 'Yu Gothic', Meiryo,
+		sans-serif;
+	font-size: 17px;
+	line-height: 1.85;
+	letter-spacing: 0.02em;
+	word-break: normal;
+	overflow-wrap: anywhere;
+}
+
+a {
+	color: var(--link);
+	text-underline-offset: 0.2em;
+}
+
+h1,
+h2,
+h3,
+h4 {
+	line-height: 1.45;
+	letter-spacing: 0.01em;
+}
+
+h1 {
+	font-size: 1.6rem;
+	margin: 0.5rem 0 1.25rem;
+}
+
+.container {
+	max-width: var(--measure);
+	margin: 0 auto;
+	padding: 1.5rem 1rem;
+}
+
+/* 記事・固定ページの本文 */
+.prose h2 {
+	font-size: 1.3rem;
+	margin: 2.5rem 0 1rem;
+	padding-bottom: 0.3rem;
+	border-bottom: 2px solid var(--line);
+}
+
+.prose h3 {
+	font-size: 1.1rem;
+	margin: 2rem 0 0.75rem;
+}
+
+.prose p,
+.prose ul,
+.prose ol {
+	margin: 0 0 1.25rem;
+}
+
+.prose li + li {
+	margin-top: 0.3rem;
+}
+
+.prose blockquote {
+	margin: 1.5rem 0;
+	padding: 0.5rem 1rem;
+	border-left: 4px solid var(--accent);
+	background: var(--subtle);
+	color: var(--muted);
+}
+
+.prose blockquote p:last-child {
+	margin-bottom: 0;
+}
+
+/* 表はスマホで横スクロール */
+.prose table {
+	display: block;
+	overflow-x: auto;
+	border-collapse: collapse;
+	margin: 0 0 1.5rem;
+	font-size: 0.92rem;
+	line-height: 1.6;
+	-webkit-overflow-scrolling: touch;
+}
+
+.prose th,
+.prose td {
+	border: 1px solid var(--line);
+	padding: 0.5rem 0.75rem;
+	text-align: left;
+	vertical-align: top;
+	min-width: 6em;
+}
+
+.prose th {
+	background: var(--subtle);
+	white-space: nowrap;
+}
+
+.prose code {
+	font-size: 0.9em;
+	background: var(--subtle);
+	padding: 0.1em 0.35em;
+	border-radius: 4px;
+}
+
+.prose pre {
+	overflow-x: auto;
+	padding: 1rem;
+	background: var(--subtle);
+	border-radius: 6px;
+	line-height: 1.5;
+}
+
+.prose pre code {
+	padding: 0;
+	background: none;
+}
+
+.prose img,
+.prose svg {
+	max-width: 100%;
+	height: auto;
+}
+
+hr {
+	border: none;
+	border-top: 1px solid var(--line);
+	margin: 2rem 0;
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}

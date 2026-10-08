@@ -1,0 +1,95 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import FormattedDate from '../components/FormattedDate.astro';
+import PrNotice from '../components/PrNotice.astro';
+import SeriesNav from '../components/SeriesNav.astro';
+import Sidebar from '../components/Sidebar.astro';
+import { categoryOf } from '../data/categories';
+import Base from './Base.astro';
+
+interface Props {
+	post: CollectionEntry<'posts'>;
+	prev?: CollectionEntry<'posts'>;
+	next?: CollectionEntry<'posts'>;
+}
+const { post, prev, next } = Astro.props;
+const { title, description, pubDate, updatedDate, category, tags, pr } = post.data;
+const cat = categoryOf(category);
+---
+
+<Base title={title} description={description}>
+	<div class="post-layout">
+		<main class="prose">
+			<article>
+				<p class="post-meta">
+					<a href={`/category/${category}/`}>{cat.name}</a>
+					<span>・</span>
+					<FormattedDate date={pubDate} />
+					{
+						updatedDate && (
+							<span>
+								（更新 <FormattedDate date={updatedDate} />）
+							</span>
+						)
+					}
+				</p>
+				<h1>{title}</h1>
+				{pr && <PrNotice />}
+				<slot />
+				{
+					tags.length > 0 && (
+						<p class="tags">
+							{tags.map((t) => (
+								<a href={`/tags/${t}/`}>#{t}</a>
+							))}
+						</p>
+					)
+				}
+				<p class="disclaimer">
+					この記事は筆者1人の体験（n=1）です。制度や金額は執筆時点のもので、税務の判断は税理士に、体調の判断は医師にご相談ください。
+				</p>
+			</article>
+			{category !== 'monthly' && <SeriesNav prev={prev} next={next} category={category} />}
+		</main>
+		<Sidebar />
+	</div>
+</Base>
+
+<style>
+	.post-layout {
+		max-width: var(--wide);
+		margin: 0 auto;
+		padding: 1.5rem 1rem;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 3rem;
+	}
+	@media (min-width: 1100px) {
+		.post-layout {
+			grid-template-columns: minmax(0, var(--measure)) 260px;
+			justify-content: center;
+		}
+	}
+	.post-meta {
+		font-size: 0.85rem;
+		color: var(--muted);
+		margin: 0 0 0.5rem;
+	}
+	.post-meta a {
+		color: var(--muted);
+	}
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		font-size: 0.85rem;
+		margin-top: 2rem;
+	}
+	.disclaimer {
+		font-size: 0.8rem;
+		color: var(--muted);
+		border-top: 1px solid var(--line);
+		padding-top: 1rem;
+		margin-top: 2rem;
+	}
+</style>

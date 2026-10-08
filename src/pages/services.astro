@@ -1,0 +1,79 @@
+---
+import { SERVICES } from '../data/services';
+import Base from '../layouts/Base.astro';
+
+const groups = [...new Set(SERVICES.map((s) => s.group))];
+const hasAffiliate = SERVICES.some((s) => s.affiliateUrl || s.bannerHtml);
+---
+
+<Base
+	title="使ったサービス一覧"
+	description="マイクロ法人の設立と運営で実際に使った銀行・カード・会計ソフト・設立サービスの一覧と、何に使ったか。"
+>
+	<main class="container prose">
+		<h1>使ったサービス一覧</h1>
+		{
+			hasAffiliate && (
+				<p class="pr">
+					<strong>PR</strong> このページにはアフィリエイトリンク（広告）を含みます。
+				</p>
+			)
+		}
+		<p>
+			法人の設立と運営で、実際に使っているサービスです。ほかの選択肢との比較と選んだ理由は、それぞれの記事に書いています。
+		</p>
+		{
+			groups.map((g) => (
+				<section>
+					<h2>{g}</h2>
+					{SERVICES.filter((s) => s.group === g).map((s) => (
+						<div class="service">
+							<h3>{s.name}</h3>
+							<p>{s.use}</p>
+							{s.bannerHtml && <div class="banner" set:html={s.bannerHtml} />}
+							<p class="links">
+								<a
+									href={s.affiliateUrl ?? s.officialUrl}
+									rel={s.affiliateUrl ? 'sponsored noopener' : 'noopener'}
+									target="_blank"
+								>
+									公式サイト
+								</a>
+								{s.post && <a href={`/posts/${s.post}/`}>選んだ理由を読む</a>}
+							</p>
+						</div>
+					))}
+				</section>
+			))
+		}
+	</main>
+</Base>
+
+<style>
+	.pr {
+		font-size: 0.85rem;
+		color: var(--muted);
+	}
+	.service {
+		border: 1px solid var(--line);
+		border-radius: 8px;
+		padding: 0.9rem 1rem;
+		margin-bottom: 0.75rem;
+	}
+	.service h3 {
+		margin: 0 0 0.25rem;
+		font-size: 1.05rem;
+	}
+	.service p {
+		margin: 0.25rem 0;
+	}
+	.links {
+		display: flex;
+		gap: 1.25rem;
+		font-size: 0.9rem;
+	}
+	.banner :global(img) {
+		max-width: 100%;
+		height: auto;
+	}
+</style>

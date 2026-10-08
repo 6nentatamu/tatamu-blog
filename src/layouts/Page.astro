@@ -1,0 +1,13 @@
+---
+// 固定ページ（src/pages/*.md）用のレイアウト
+import Base from './Base.astro';
+
+const { frontmatter } = Astro.props;
+---
+
+<Base title={frontmatter.title} description={frontmatter.description}>
+	<main class="container prose">
+		<h1>{frontmatter.title}</h1>
+		<slot />
+	</main>
+</Base>

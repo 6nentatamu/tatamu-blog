@@ -1,0 +1,28 @@
+---
+// 記事の中で使うアフィリエイトリンク（.mdx の記事で使う）
+//   文中：<AffLink href="...">GMOあおぞらネット銀行</AffLink>
+//   ボタン：<AffLink href="..." button>公式サイトを見る</AffLink>
+interface Props {
+	href: string;
+	button?: boolean;
+}
+const { href, button = false } = Astro.props;
+---
+
+<a href={href} rel="sponsored noopener" target="_blank" class={button ? 'aff-button' : undefined}><slot /></a>
+
+<style>
+	.aff-button {
+		display: inline-block;
+		margin: 0.5rem 0;
+		padding: 0.7rem 1.4rem;
+		border-radius: 6px;
+		background: var(--accent);
+		color: #fff;
+		font-weight: 700;
+		text-decoration: none;
+	}
+	.aff-button:hover {
+		opacity: 0.9;
+	}
+</style>

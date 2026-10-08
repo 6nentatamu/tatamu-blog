@@ -1,0 +1,57 @@
+---
+// 記事ページのサイドバー（スマホでは本文の下）。使ったサービスを出す。
+import { SERVICES } from '../data/services';
+---
+
+<aside class="sidebar">
+	<h2>使ったサービス</h2>
+	<ul>
+		{
+			SERVICES.map((s) =>
+				s.bannerHtml ? (
+					<li set:html={s.bannerHtml} />
+				) : (
+					<li>
+						<a
+							href={s.affiliateUrl ?? s.officialUrl}
+							rel={s.affiliateUrl ? 'sponsored noopener' : 'noopener'}
+							target="_blank"
+						>
+							{s.name}
+						</a>
+						<span>{s.group}</span>
+					</li>
+				),
+			)
+		}
+	</ul>
+	<p><a href="/services/">一覧と選んだ理由</a></p>
+</aside>
+
+<style>
+	.sidebar {
+		font-size: 0.9rem;
+	}
+	h2 {
+		font-size: 0.95rem;
+		margin: 0 0 0.5rem;
+	}
+	ul {
+		list-style: none;
+		padding: 0;
+		margin: 0 0 0.75rem;
+	}
+	li {
+		padding: 0.4rem 0;
+		border-bottom: 1px solid var(--line);
+	}
+	li span {
+		display: block;
+		font-size: 0.75rem;
+		color: var(--muted);
+	}
+	li :global(img) {
+		max-width: 100%;
+		height: auto;
+	}
+</style>

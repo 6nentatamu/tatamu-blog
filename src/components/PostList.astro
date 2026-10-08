@@ -1,0 +1,57 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { categoryOf } from '../data/categories';
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+	posts: CollectionEntry<'posts'>[];
+}
+const { posts } = Astro.props;
+---
+
+{posts.length === 0 && <p class="empty">まだ記事はありません。</p>}
+<ul class="post-list">
+	{
+		posts.map((p) => (
+			<li>
+				<a href={`/posts/${p.id}/`}>{p.data.title}</a>
+				<p class="meta">
+					<a href={`/category/${p.data.category}/`}>{categoryOf(p.data.category).name}</a>
+					<span>・</span>
+					<FormattedDate date={p.data.pubDate} />
+				</p>
+				<p class="desc">{p.data.description}</p>
+			</li>
+		))
+	}
+</ul>
+
+<style>
+	.post-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+	li {
+		padding: 1rem 0;
+		border-bottom: 1px solid var(--line);
+	}
+	li > a {
+		font-weight: 700;
+		font-size: 1.05rem;
+	}
+	.meta {
+		margin: 0.25rem 0;
+		font-size: 0.8rem;
+		color: var(--muted);
+	}
+	.meta a {
+		color: var(--muted);
+	}
+	.desc,
+	.empty {
+		margin: 0;
+		font-size: 0.9rem;
+		color: var(--muted);
+	}
+</style>

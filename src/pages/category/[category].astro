@@ -1,0 +1,32 @@
+---
+import PostList from '../../components/PostList.astro';
+import { CATEGORIES, type CategoryId } from '../../data/categories';
+import Base from '../../layouts/Base.astro';
+import { getPosts, seriesOrder } from '../../lib/posts';
+
+export function getStaticPaths() {
+	return CATEGORIES.map((c) => ({ params: { category: c.id }, props: { cat: c } }));
+}
+
+const { cat } = Astro.props;
+const posts = await getPosts();
+// 連載の部は連載順、月次収支は新しい順
+const list =
+	cat.id === 'monthly'
+		? posts.filter((p) => p.data.category === 'monthly')
+		: seriesOrder(posts, cat.id as CategoryId);
+---
+
+<Base title={cat.name} description={cat.lead}>
+	<main class="container">
+		<h1>{cat.name}</h1>
+		<p class="lead">{cat.lead}</p>
+		<PostList posts={list} />
+	</main>
+</Base>
+
+<style>
+	.lead {
+		color: var(--muted);
+	}
+</style>

@@ -1,0 +1,36 @@
+---
+import { AUTHOR, X_URL } from '../consts';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+	<nav aria-label="サイト情報">
+		<a href="/author/">運営者情報</a>
+		<a href="/contact/">お問い合わせ</a>
+		<a href="/privacy/">プライバシーポリシー</a>
+		<a href="/disclaimer/">PR表記・免責</a>
+		{X_URL && <a href={X_URL} rel="me noopener" target="_blank">X</a>}
+	</nav>
+	<p>&copy; {year} {AUTHOR}</p>
+</footer>
+
+<style>
+	.site-footer {
+		margin-top: 4rem;
+		padding: 2rem 1rem 3rem;
+		border-top: 1px solid var(--line);
+		color: var(--muted);
+		font-size: 0.875rem;
+		text-align: center;
+	}
+	nav {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.5rem 1.25rem;
+		margin-bottom: 1rem;
+	}
+	a {
+		color: var(--muted);
+	}
+</style>

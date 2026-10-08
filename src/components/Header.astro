@@ -1,0 +1,67 @@
+---
+import { SITE_TITLE } from '../consts';
+
+const links = [
+	{ href: '/hajimeni/', label: 'はじめに' },
+	{ href: '/series/', label: '連載目次' },
+	{ href: '/category/monthly/', label: '月次収支' },
+	{ href: '/services/', label: '使ったサービス' },
+];
+const path = Astro.url.pathname;
+---
+
+<header class="site-header">
+	<div class="inner">
+		<a class="site-title" href="/">{SITE_TITLE}</a>
+		<nav aria-label="メイン">
+			{
+				links.map((l) => (
+					<a href={l.href} class={path.startsWith(l.href) ? 'active' : undefined}>
+						{l.label}
+					</a>
+				))
+			}
+		</nav>
+	</div>
+</header>
+
+<style>
+	.site-header {
+		border-bottom: 1px solid var(--line);
+		background: var(--bg);
+	}
+	.inner {
+		max-width: var(--wide);
+		margin: 0 auto;
+		padding: 0.75rem 1rem;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem 1.5rem;
+	}
+	.site-title {
+		font-weight: 700;
+		font-size: 1.1rem;
+		color: var(--text);
+		text-decoration: none;
+	}
+	nav {
+		display: flex;
+		gap: 1rem;
+		overflow-x: auto;
+		white-space: nowrap;
+		font-size: 0.95rem;
+	}
+	nav a {
+		color: var(--muted);
+		text-decoration: none;
+		padding: 0.25rem 0;
+		border-bottom: 2px solid transparent;
+	}
+	nav a:hover,
+	nav a.active {
+		color: var(--text);
+		border-bottom-color: var(--accent);
+	}
+</style>

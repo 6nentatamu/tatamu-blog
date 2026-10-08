@@ -1,0 +1,134 @@
+---
+import PostList from '../components/PostList.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { CATEGORIES } from '../data/categories';
+import Base from '../layouts/Base.astro';
+import { getPosts } from '../lib/posts';
+
+const posts = await getPosts();
+const latest = posts.filter((p) => p.data.category !== 'monthly').slice(0, 5);
+const monthly = posts.find((p) => p.data.category === 'monthly');
+const parts = CATEGORIES.filter((c) => c.id !== 'monthly');
+---
+
+<Base title={SITE_TITLE} description={SITE_DESCRIPTION}>
+	<main class="container">
+		<section class="hero">
+			<h1>{SITE_TITLE}</h1>
+			<p class="catch">
+				適応障害で退職した会社員が、<br class="sp" />解散日まで決めてマイクロ法人を作った記録。
+			</p>
+			<p class="lead">設立費用・役員報酬・社会保険・解散の税務を、実際の数字で書いています。</p>
+			<a class="start" href="/hajimeni/">はじめに読む →</a>
+		</section>
+
+		<section>
+			<h2>連載</h2>
+			<ol class="parts">
+				{
+					parts.map((c, i) => (
+						<li>
+							<a href={`/category/${c.id}/`}>
+								<span class="no">第{i}部</span>
+								<span class="name">{c.name}</span>
+							</a>
+							<p>{c.lead}</p>
+						</li>
+					))
+				}
+			</ol>
+			<p><a href="/series/">連載目次（全記事）</a></p>
+		</section>
+
+		{
+			monthly && (
+				<section>
+					<h2>最新の月次収支</h2>
+					<p>
+						<a href={`/posts/${monthly.id}/`}>{monthly.data.title}</a>
+					</p>
+				</section>
+			)
+		}
+
+		<section>
+			<h2>新着</h2>
+			<PostList posts={latest} />
+		</section>
+	</main>
+</Base>
+
+<style>
+	.hero {
+		padding: 2.5rem 0 1.5rem;
+		border-bottom: 1px solid var(--line);
+	}
+	.hero h1 {
+		font-size: 1.9rem;
+		margin: 0 0 1rem;
+	}
+	.catch {
+		font-size: 1.15rem;
+		font-weight: 700;
+		margin: 0 0 0.5rem;
+	}
+	.lead {
+		color: var(--muted);
+		margin: 0 0 1.5rem;
+	}
+	.start {
+		display: inline-block;
+		padding: 0.6rem 1.2rem;
+		border-radius: 6px;
+		background: var(--accent);
+		color: #fff;
+		font-weight: 700;
+		text-decoration: none;
+	}
+	section {
+		margin-top: 2.5rem;
+	}
+	h2 {
+		font-size: 1.2rem;
+	}
+	.parts {
+		list-style: none;
+		padding: 0;
+		margin: 0 0 1rem;
+		display: grid;
+		gap: 0.75rem;
+	}
+	@media (min-width: 720px) {
+		.parts {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+	.parts li {
+		border: 1px solid var(--line);
+		border-radius: 8px;
+		padding: 0.9rem 1rem;
+	}
+	.parts a {
+		text-decoration: none;
+		color: var(--text);
+		font-weight: 700;
+	}
+	.parts .no {
+		color: var(--accent);
+		margin-right: 0.5rem;
+		font-size: 0.85rem;
+	}
+	.parts p {
+		margin: 0.3rem 0 0;
+		font-size: 0.875rem;
+		color: var(--muted);
+	}
+	.sp {
+		display: none;
+	}
+	@media (max-width: 520px) {
+		.sp {
+			display: inline;
+		}
+	}
+</style>

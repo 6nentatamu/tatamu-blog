@@ -1,0 +1,20 @@
+---
+// ASP が出すバナーの HTML をそのまま差し込む（.mdx の記事・サイドバー用）
+interface Props {
+	html: string;
+}
+const { html } = Astro.props;
+---
+
+<div class="aff-banner" set:html={html} />
+
+<style>
+	.aff-banner {
+		margin: 1rem 0;
+		text-align: center;
+	}
+	.aff-banner :global(img) {
+		max-width: 100%;
+		height: auto;
+	}
+</style>

@@ -1,0 +1,64 @@
+---
+import { CATEGORIES } from '../data/categories';
+import { SERIES } from '../data/series';
+import Base from '../layouts/Base.astro';
+import { getPosts, seriesOrder } from '../lib/posts';
+
+const posts = await getPosts();
+const parts = CATEGORIES.filter((c) => c.id !== 'monthly').map((c, i) => {
+	const published = seriesOrder(posts, c.id);
+	const titles = new Set(published.map((p) => p.data.title));
+	// 予定のうち、まだ記事が無いものを「準備中」として後ろに並べる
+	const planned = (SERIES[c.id] ?? []).filter((p) => !titles.has(p.title));
+	return { ...c, no: i, published, planned };
+});
+---
+
+<Base title="連載目次" description="前日譚から解散まで、連載の全記事。準備中の記事もタイトルだけ載せています。">
+	<main class="container prose">
+		<h1>連載目次</h1>
+		<p>前日譚から順に読むと、退職から法人の設立・運用までを時系列でたどれます。</p>
+		{
+			parts.map((part) => (
+				<section>
+					<h2>
+						第{part.no}部 {part.name}
+					</h2>
+					<p class="lead">{part.lead}</p>
+					<ol>
+						{part.published.map((p) => (
+							<li>
+								<a href={`/posts/${p.id}/`}>{p.data.title}</a>
+							</li>
+						))}
+						{part.planned.map((p) => (
+							<li class="planned">
+								{p.title}
+								<span>準備中</span>
+							</li>
+						))}
+					</ol>
+				</section>
+			))
+		}
+	</main>
+</Base>
+
+<style>
+	.lead {
+		color: var(--muted);
+		font-size: 0.9rem;
+		margin-top: -0.5rem;
+	}
+	.planned {
+		color: var(--muted);
+	}
+	.planned span {
+		font-size: 0.75rem;
+		border: 1px solid var(--line);
+		border-radius: 3px;
+		padding: 0 0.3rem;
+		margin-left: 0.5rem;
+		white-space: nowrap;
+	}
+</style>

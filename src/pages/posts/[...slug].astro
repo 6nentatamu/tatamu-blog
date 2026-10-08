@@ -1,0 +1,26 @@
+---
+import { render } from 'astro:content';
+import AffBanner from '../../components/AffBanner.astro';
+import AffLink from '../../components/AffLink.astro';
+import Post from '../../layouts/Post.astro';
+import { getPosts, seriesOrder } from '../../lib/posts';
+
+export async function getStaticPaths() {
+	const posts = await getPosts();
+	return posts.map((post) => {
+		const series = seriesOrder(posts, post.data.category);
+		const i = series.findIndex((p) => p.id === post.id);
+		return {
+			params: { slug: post.id },
+			props: { post, prev: series[i - 1], next: series[i + 1] },
+		};
+	});
+}
+
+const { post, prev, next } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Post post={post} prev={prev} next={next}>
+	<Content components={{ AffLink, AffBanner }} />
+</Post>
