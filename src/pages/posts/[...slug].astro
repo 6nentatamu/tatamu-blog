@@ -5,6 +5,7 @@ import AffLink from '../../components/AffLink.astro';
 import BarChart from '../../components/BarChart.astro';
 import Caution from '../../components/Caution.astro';
 import Figure from '../../components/Figure.astro';
+import Steps from '../../components/Steps.astro';
 import Memo from '../../components/Memo.astro';
 import Point from '../../components/Point.astro';
 import Post from '../../layouts/Post.astro';
@@ -27,5 +28,5 @@ const { Content, headings } = await render(post);
 ---
 
 <Post post={post} prev={prev} next={next} headings={headings} related={related}>
-	<Content components={{ AffLink, AffBanner, Point, Caution, Memo, Figure, BarChart }} />
+	<Content components={{ AffLink, AffBanner, Point, Caution, Memo, Figure, BarChart, Steps }} />
 </Post>

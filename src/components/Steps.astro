@@ -1,0 +1,84 @@
+---
+// 手順・時間軸の図。<Steps items={[{ title: '退職', note: '…' }]} />
+//   arrows={false} で矢印なし（並列の項目を並べるとき）
+interface Item {
+	title: string;
+	note?: string;
+}
+interface Props {
+	items: Item[];
+	arrows?: boolean;
+}
+const { items, arrows = true } = Astro.props;
+---
+
+<ol class={arrows ? 'steps' : 'steps flat'}>
+	{
+		items.map((it, i) => (
+			<li>
+				{arrows && <span class="num">{i + 1}</span>}
+				<span class="body">
+					<strong>{it.title}</strong>
+					{it.note && <span class="note">{it.note}</span>}
+				</span>
+			</li>
+		))
+	}
+</ol>
+
+<style>
+	.steps {
+		list-style: none;
+		margin: 0 !important;
+		padding: 0 !important;
+		display: flex;
+		flex-direction: column;
+		gap: 1.4rem;
+	}
+	.steps li {
+		position: relative;
+		display: flex;
+		gap: 0.7rem;
+		align-items: flex-start;
+		margin: 0 !important;
+		padding: 0.7rem 0.9rem;
+		border: 1px solid var(--line);
+		border-left: 4px solid var(--accent);
+		border-radius: 8px;
+		background: var(--accent-soft);
+		color: var(--text);
+	}
+	.steps:not(.flat) li:not(:last-child)::after {
+		content: '▼';
+		position: absolute;
+		left: 50%;
+		bottom: -1.3rem;
+		transform: translateX(-50%);
+		font-size: 0.8rem;
+		color: var(--accent);
+	}
+	.num {
+		flex: none;
+		width: 1.6rem;
+		height: 1.6rem;
+		border-radius: 50%;
+		background: var(--accent);
+		color: var(--bg);
+		font-weight: 700;
+		font-size: 0.85rem;
+		display: grid;
+		place-items: center;
+	}
+	.body {
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+	}
+	.note {
+		font-size: 0.85rem;
+		color: var(--muted);
+	}
+	.flat {
+		gap: 0.6rem;
+	}
+</style>
