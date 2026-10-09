@@ -45,10 +45,10 @@ const image = ogPath(post);
 				<p class:list={['year-badge', { calm }]}>
 					<span class="cells" aria-hidden="true">
 						{Array.from({ length: TOTAL_YEARS }, (_, i) => (
-							<i class:list={[{ done: i + 1 < year, now: i + 1 === year }]} />
+							<i class:list={[{ done: !calm && i + 1 < year, now: !calm && i + 1 === year }]} />
 						))}
 					</span>
-					この記事は{TOTAL_YEARS}年のうち<b>{year}年目</b>に書きました
+					{calm ? <><b>設立前</b>・法人を作る前の話です</> : <>この記事は{TOTAL_YEARS}年のうち<b>{year}年目</b>に書きました</>}
 				</p>
 				<img class="eyecatch" src={image} alt="" width="1200" height="630" />
 				{pr && <PrNotice />}

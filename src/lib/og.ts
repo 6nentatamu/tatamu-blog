@@ -4,7 +4,8 @@
 import sharp from 'sharp';
 
 const FONT = "'Yu Gothic UI','Yu Gothic','Meiryo','Hiragino Sans','Noto Sans JP',sans-serif";
-const MINCHO = "'Yu Mincho','Hiragino Mincho ProN','Noto Serif JP',serif";
+// Zen Old Mincho はビルド環境（Windows の sharp/librsvg）に無いので、システムの游明朝を使う
+const MINCHO = "'Zen Old Mincho','Yu Mincho','YuMincho','Hiragino Mincho ProN','Noto Serif JP',serif";
 const BG = '#faf8f4';
 const INK = '#26231f';
 const DEADLINE = '#c8553d';
@@ -44,21 +45,26 @@ function esc(s: string) {
 	return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-// 全角を1、半角を0.55として幅を数え、max を超えたら折り返す。行頭に句読点を置かない。
+// 数字＋単位（1.86万円、68,590円、1年6か月 など）や英単語を1語として扱う
+const TOKEN = /[0-9０-９][0-9０-９,，.．]*(?:(?:[万千百億]?円|万|億|か月|ヶ月|カ月|年|月|日|時間|分|歳|%|％|人|回|件|割|倍|部|号|第)[0-9０-９,，.．]*)*|[A-Za-z]+|[\s\S]/gu;
+const NO_HEAD = '、。，．・：；）」』！？ー…%％';
+const cw = (ch: string) => (/[A-Z]/.test(ch) ? 0.7 : /[ -~]/.test(ch) ? 0.55 : 1);
+
+// 全角を1、半角を0.55として幅を数え、max を超えたら語の前で折り返す。行頭に句読点を置かない。
 function wrap(text: string, max: number): string[] {
+	const tokens = text.match(TOKEN) ?? [];
 	const lines: string[] = [];
 	let cur = '';
 	let w = 0;
-	const noHead = '、。，．・：；）」』！？ー…';
-	for (const ch of text) {
-		const cw = /[\x20-\x7e]/.test(ch) ? 0.55 : 1;
-		if (w + cw > max && cur && !noHead.includes(ch)) {
+	for (const t of tokens) {
+		const tw = [...t].reduce((a, c) => a + cw(c), 0);
+		if (w + tw > max && cur && !NO_HEAD.includes(t[0])) {
 			lines.push(cur);
 			cur = '';
 			w = 0;
 		}
-		cur += ch;
-		w += cw;
+		cur += t;
+		w += tw;
 	}
 	if (cur) lines.push(cur);
 	return lines;
@@ -66,7 +72,7 @@ function wrap(text: string, max: number): string[] {
 
 // タイトルの「：」で区切れるなら、そこで改行する
 function titleLines(title: string, max = 17): string[] {
-	const parts = title.split(/(?<=[：:、])/);
+	const parts = title.split(/(?<=[：:、？])/);
 	return parts.flatMap((p) => wrap(p, max));
 }
 
@@ -77,7 +83,7 @@ export function ogSvg(opts: OgOpts) {
 	const kn = opts.keyNumber;
 	const maxLines = kn ? 3 : 4;
 	const lines = titleLines(opts.title, 15).slice(0, maxLines);
-	const size = lines.length >= 3 ? 50 : 58;
+	const size = lines.length >= 3 ? 50 : 56;
 	const lh = size * 1.4;
 	const titleTop = 205 + size;
 	const label = opts.partNo !== undefined ? `第${opts.partNo}部　${opts.part}` : opts.part;
@@ -86,6 +92,7 @@ export function ogSvg(opts: OgOpts) {
 	const cells = Array.from({ length: 6 }, (_, i) => {
 		const y = i + 1;
 		const x = 38 + i * 32;
+		if (calm) return `<rect x="${x + 1.5}" y="231.5" width="21" height="67" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="3"/>`;
 		if (y < opts.year) return `<rect x="${x}" y="230" width="24" height="70" fill="#fff"/>`;
 		if (y === opts.year)
 			return `<rect x="${x}" y="230" width="24" height="70" fill="${nowColor}"${calm ? '' : ' stroke="#fff" stroke-width="2"'}/>`;
@@ -103,13 +110,13 @@ ${motifSvg(theme.motif)}
 <text x="38" y="114" font-family="${MINCHO}" font-size="25" font-weight="700" fill="#fff">ひとり法人</text>
 <text x="38" y="200" font-family="${FONT}" font-size="22" fill="#fff" fill-opacity=".85">6年のうち</text>
 ${cells}
-<text x="38" y="370" font-family="${FONT}" font-size="54" font-weight="700" fill="#fff">${opts.year}<tspan font-size="30">年目</tspan></text>
+<text x="38" y="370" font-family="${FONT}" font-size="54" font-weight="700" fill="#fff">${calm ? '設立前' : `${opts.year}<tspan font-size="30">年目</tspan>`}</text>
 <rect x="310" y="70" width="${labelW}" height="50" rx="25" fill="${theme.color}"/>
 <text x="${310 + labelW / 2}" y="105" text-anchor="middle" font-family="${FONT}" font-size="26" font-weight="700" fill="#fff">${esc(label)}</text>
 ${lines
 	.map(
 		(l, i) =>
-			`<text x="310" y="${titleTop + i * lh - (kn ? 30 : 0)}" font-family="${FONT}" font-size="${size}" font-weight="700" fill="${INK}">${esc(l)}</text>`,
+			`<text x="310" y="${titleTop + i * lh - (kn ? 30 : 0)}" font-family="${MINCHO}" font-size="${size}" font-weight="700" fill="${INK}">${esc(l)}</text>`,
 	)
 	.join('\n')}
 ${knSvg}
