@@ -7,7 +7,7 @@ const { current = 1 } = Astro.props;
 const years = [1, 2, 3, 4, 5, 6];
 ---
 
-<figure class="scale" aria-label={`6年の目盛り。第1期は2026年9月から。今は${current}年目`}>
+<figure class="scale" aria-label={`6年の目盛り。今は${current}年目`}>
 	<p class="scale-head">
 		<span>設立</span>
 		<strong>6年で解散</strong>
@@ -23,7 +23,7 @@ const years = [1, 2, 3, 4, 5, 6];
 			))
 		}
 	</ol>
-	<figcaption>第1期＝2026年9月〜。今は{current}年目です</figcaption>
+	<figcaption>設立から解散まで6年。今は{current}年目です</figcaption>
 </figure>
 
 <style>
