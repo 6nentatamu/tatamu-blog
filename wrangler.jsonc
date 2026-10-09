@@ -1,0 +1,8 @@
+{
+	// Cloudflare Workers（静的アセットのみ）で公開するための設定
+	"name": "tatamu-blog",
+	"compatibility_date": "2026-10-09",
+	"assets": {
+		"directory": "./dist"
+	}
+}
