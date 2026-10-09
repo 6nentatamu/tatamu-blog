@@ -11,7 +11,8 @@ export async function GET(context) {
 		items: posts.map((post) => ({
 			title: post.data.title,
 			description: post.data.description,
-			pubDate: post.data.pubDate,
+			// 月次収支は日付を出さない（設立月の逆算を防ぐ）
+			...(post.data.category === 'monthly' ? {} : { pubDate: post.data.pubDate }),
 			link: `/posts/${post.id}/`,
 		})),
 	});

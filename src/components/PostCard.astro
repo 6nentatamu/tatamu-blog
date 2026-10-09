@@ -20,7 +20,7 @@ const { post, compact = false } = Astro.props;
 		<p class="part">{partLabel(post.data.category)}</p>
 		<h3><a href={`/posts/${post.id}/`}>{post.data.title}</a></h3>
 		<p class="meta">
-			<FormattedDate date={post.data.pubDate} />
+			{post.data.category !== 'monthly' && <FormattedDate date={post.data.pubDate} />}
 			<span>・{readingMinutes(post)}分で読めます</span>
 		</p>
 	</div>

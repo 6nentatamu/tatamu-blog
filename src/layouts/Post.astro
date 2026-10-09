@@ -31,7 +31,7 @@ const image = ogPath(post);
 			<article>
 				<p class="post-meta">
 					<a class="part" href={`/category/${category}/`}>{partLabel(category)}</a>
-					<FormattedDate date={pubDate} />
+					{category !== 'monthly' && <FormattedDate date={pubDate} />}
 					{
 						updatedDate && (
 							<span>
