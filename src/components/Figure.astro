@@ -1,0 +1,41 @@
+---
+// 図のラッパー。<Figure caption="…">（SVG・画像・BarChart など）</Figure>
+interface Props {
+	caption?: string;
+}
+const { caption } = Astro.props;
+---
+
+<figure class="fig">
+	<div class="fig-body"><slot /></div>
+	{caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+	.fig {
+		margin: 1.75rem 0;
+		padding: 1rem;
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		background: var(--bg);
+	}
+	.fig-body {
+		overflow-x: auto;
+	}
+	.fig-body :global(svg),
+	.fig-body :global(img) {
+		display: block;
+		max-width: 100%;
+		height: auto;
+		margin: 0 auto;
+	}
+	.fig-body :global(p:last-child) {
+		margin-bottom: 0;
+	}
+	figcaption {
+		margin-top: 0.6rem;
+		font-size: 0.85rem;
+		color: var(--muted);
+		text-align: center;
+	}
+</style>

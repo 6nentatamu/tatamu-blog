@@ -1,0 +1,62 @@
+---
+// 強調ボックスの共通部品。Point / Caution / Memo から使う
+interface Props {
+	kind: 'point' | 'caution' | 'memo';
+	title: string;
+}
+const { kind, title } = Astro.props;
+const icon = { point: '✓', caution: '!', memo: '✎' }[kind];
+---
+
+<aside class:list={['box', kind]}>
+	<p class="box-title"><span class="icon" aria-hidden="true">{icon}</span>{title}</p>
+	<div class="box-body"><slot /></div>
+</aside>
+
+<style>
+	.box {
+		margin: 1.75rem 0;
+		border-radius: 10px;
+		border: 2px solid var(--c);
+		overflow: hidden;
+	}
+	.point {
+		--c: var(--accent);
+		--bgc: var(--accent-soft);
+	}
+	.caution {
+		--c: var(--warn);
+		--bgc: var(--warn-soft);
+	}
+	.memo {
+		--c: var(--memo);
+		--bgc: var(--memo-soft);
+	}
+	.box-title {
+		margin: 0 !important;
+		padding: 0.4rem 1rem;
+		background: var(--c);
+		color: #fff;
+		font-weight: 700;
+		font-size: 0.95rem;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+	.icon {
+		display: inline-grid;
+		place-items: center;
+		width: 1.4em;
+		height: 1.4em;
+		border-radius: 50%;
+		background: rgb(255 255 255 / 0.25);
+		font-size: 0.85em;
+	}
+	.box-body {
+		padding: 0.9rem 1.1rem;
+		background: var(--bgc);
+	}
+	.box-body :global(> :last-child) {
+		margin-bottom: 0;
+	}
+</style>

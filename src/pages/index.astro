@@ -1,29 +1,58 @@
 ---
 import PostList from '../components/PostList.astro';
+import ProfileBox from '../components/ProfileBox.astro';
+import SixYearScale from '../components/SixYearScale.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 import { CATEGORIES } from '../data/categories';
 import Base from '../layouts/Base.astro';
-import { getPosts } from '../lib/posts';
+import { getPosts, ogPath } from '../lib/posts';
 
 const posts = await getPosts();
-const latest = posts.filter((p) => p.data.category !== 'monthly').slice(0, 5);
+const latest = posts.filter((p) => p.data.category !== 'monthly').slice(0, 6);
 const monthly = posts.find((p) => p.data.category === 'monthly');
 const parts = CATEGORIES.filter((c) => c.id !== 'monthly');
 ---
 
 <Base title={SITE_TITLE} description={SITE_DESCRIPTION}>
-	<main class="container">
-		<section class="hero">
-			<h1>{SITE_TITLE}</h1>
-			<p class="catch">
-				適応障害で退職した会社員が、<br class="sp" />解散日まで決めてマイクロ法人を作った記録。
-			</p>
-			<p class="lead">設立費用・役員報酬・社会保険・解散の税務を、実際の数字で書いています。</p>
-			<a class="start" href="/hajimeni/">はじめに読む →</a>
+	<section class="hero">
+		<div class="hero-inner">
+			<div class="hero-text">
+				<p class="eyebrow">ひとり法人の設立から解散までの記録</p>
+				<h1>解散日まで決めて、<br />ひとり法人を作りました。</h1>
+				<p class="lead">
+					適応障害で会社員を辞めたあと、6年でたたむと決めて法人を作りました。設立費用・役員報酬・社会保険・解散の税務を、実際の数字で書いています。
+				</p>
+				<div class="cta">
+					<a class="start" href="/hajimeni/">はじめに読む →</a>
+					<a class="sub" href="/series/">連載目次</a>
+				</div>
+			</div>
+			<div class="hero-fig">
+				<SixYearScale current={1} />
+			</div>
+		</div>
+	</section>
+
+	<main class="container wide">
+		<section>
+			<h2 class="sec">新着記事</h2>
+			<PostList posts={latest} cols={3} />
 		</section>
 
+		{
+			monthly && (
+				<section>
+					<h2 class="sec">最新の月次収支</h2>
+					<a class="monthly" href={`/posts/${monthly.id}/`}>
+						<img src={ogPath(monthly)} alt="" width="1200" height="630" loading="lazy" />
+						<span>{monthly.data.title}</span>
+					</a>
+				</section>
+			)
+		}
+
 		<section>
-			<h2>連載</h2>
+			<h2 class="sec">連載</h2>
 			<ol class="parts">
 				{
 					parts.map((c, i) => (
@@ -37,59 +66,107 @@ const parts = CATEGORIES.filter((c) => c.id !== 'monthly');
 					))
 				}
 			</ol>
-			<p><a href="/series/">連載目次（全記事）</a></p>
+			<p><a href="/series/">連載目次（全記事）→</a></p>
 		</section>
 
-		{
-			monthly && (
-				<section>
-					<h2>最新の月次収支</h2>
-					<p>
-						<a href={`/posts/${monthly.id}/`}>{monthly.data.title}</a>
-					</p>
-				</section>
-			)
-		}
-
-		<section>
-			<h2>新着</h2>
-			<PostList posts={latest} />
+		<section class="about">
+			<ProfileBox label="書いている人" />
 		</section>
 	</main>
 </Base>
 
 <style>
 	.hero {
-		padding: 2.5rem 0 1.5rem;
+		background: linear-gradient(180deg, var(--accent-soft), var(--bg));
 		border-bottom: 1px solid var(--line);
 	}
-	.hero h1 {
-		font-size: 1.9rem;
-		margin: 0 0 1rem;
+	.hero-inner {
+		max-width: var(--wide);
+		margin: 0 auto;
+		padding: 1.75rem 1rem 2rem;
+		display: grid;
+		gap: 1.5rem;
+		align-items: center;
 	}
-	.catch {
-		font-size: 1.15rem;
-		font-weight: 700;
+	@media (min-width: 860px) {
+		.hero-inner {
+			grid-template-columns: 1.1fr 1fr;
+			gap: 3rem;
+			padding: 3rem 1rem 3.25rem;
+		}
+	}
+	.eyebrow {
 		margin: 0 0 0.5rem;
+		font-size: 0.85rem;
+		font-weight: 700;
+		color: var(--accent);
+	}
+	h1 {
+		font-size: clamp(1.45rem, 5.4vw, 2.1rem);
+		line-height: 1.45;
+		margin: 0 0 0.75rem;
 	}
 	.lead {
-		color: var(--muted);
-		margin: 0 0 1.5rem;
+		margin: 0 0 1.25rem;
+		font-size: 1rem;
+		color: var(--text);
+	}
+	.cta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		align-items: center;
 	}
 	.start {
 		display: inline-block;
-		padding: 0.6rem 1.2rem;
-		border-radius: 6px;
+		padding: 0.7rem 1.5rem;
+		border-radius: 999px;
 		background: var(--accent);
 		color: #fff;
 		font-weight: 700;
 		text-decoration: none;
+		box-shadow: 0 4px 12px rgb(31 111 106 / 0.3);
 	}
-	section {
+	.start:hover {
+		background: var(--accent-strong);
+	}
+	.sub {
+		font-weight: 700;
+	}
+	.wide {
+		max-width: var(--wide);
+	}
+	main section {
 		margin-top: 2.5rem;
 	}
-	h2 {
-		font-size: 1.2rem;
+	.sec {
+		font-size: 1.25rem;
+		margin: 0 0 1rem;
+		padding-left: 0.7rem;
+		border-left: 6px solid var(--accent);
+	}
+	.monthly {
+		display: grid;
+		grid-template-columns: 160px 1fr;
+		gap: 1rem;
+		align-items: center;
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 0.75rem;
+		text-decoration: none;
+		color: var(--text);
+		font-weight: 700;
+	}
+	.monthly img {
+		width: 100%;
+		height: auto;
+		border-radius: 6px;
+	}
+	@media (max-width: 520px) {
+		.monthly {
+			grid-template-columns: 110px 1fr;
+			font-size: 0.95rem;
+		}
 	}
 	.parts {
 		list-style: none;
@@ -100,13 +177,15 @@ const parts = CATEGORIES.filter((c) => c.id !== 'monthly');
 	}
 	@media (min-width: 720px) {
 		.parts {
-			grid-template-columns: 1fr 1fr;
+			grid-template-columns: 1fr 1fr 1fr;
 		}
 	}
 	.parts li {
 		border: 1px solid var(--line);
+		border-top: 3px solid var(--accent);
 		border-radius: 8px;
 		padding: 0.9rem 1rem;
+		background: var(--bg);
 	}
 	.parts a {
 		text-decoration: none;
@@ -123,12 +202,7 @@ const parts = CATEGORIES.filter((c) => c.id !== 'monthly');
 		font-size: 0.875rem;
 		color: var(--muted);
 	}
-	.sp {
-		display: none;
-	}
-	@media (max-width: 520px) {
-		.sp {
-			display: inline;
-		}
+	.about {
+		max-width: 560px;
 	}
 </style>

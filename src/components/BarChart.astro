@@ -1,0 +1,93 @@
+---
+// 横棒グラフ（インラインSVG）。色は CSS 変数なのでダークモードでも読める
+//   <BarChart data={[{ label: '任意継続', value: 44.2, note: '最長2年ほぼ同額' }]} unit="万円" />
+//   highlight に label を渡すと、その棒だけブランド色（省略時は全部ブランド色）
+interface Item {
+	label: string;
+	value: number;
+	note?: string;
+}
+interface Props {
+	data: Item[];
+	unit?: string;
+	highlight?: string;
+	title?: string;
+}
+const { data, unit = '', highlight, title } = Astro.props;
+const max = Math.max(...data.map((d) => d.value), 0) || 1;
+const labelW = Math.min(230, Math.max(...data.map((d) => [...d.label].length)) * 15 + 10);
+const W = 640;
+const barX = labelW + 10;
+const barMax = W - barX - 120;
+const rowH = data.some((d) => d.note) ? 50 : 38;
+const H = data.length * rowH + 6;
+const fmt = (v: number) => v.toLocaleString('ja-JP');
+const aria = title ?? data.map((d) => `${d.label} ${fmt(d.value)}${unit}`).join('、');
+---
+
+<div class="barchart">
+	{title && <p class="bc-title">{title}</p>}
+	<svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={aria}>
+		{
+			data.map((d, i) => {
+				const y = i * rowH + 4;
+				const w = Math.max(2, (d.value / max) * barMax);
+				const on = !highlight || highlight === d.label;
+				return (
+					<g>
+						<text x={labelW} y={y + 19} text-anchor="end" class="lbl">
+							{d.label}
+						</text>
+						<rect x={barX} y={y + 3} width={w} height={22} rx={3} class={on ? 'bar on' : 'bar'} />
+						<text x={barX + w + 8} y={y + 19} class="val">
+							{fmt(d.value) + unit}
+						</text>
+						{d.note && (
+							<text x={barX} y={y + 42} class="note">
+								{d.note}
+							</text>
+						)}
+					</g>
+				);
+			})
+		}
+	</svg>
+</div>
+
+<style>
+	.barchart {
+		margin: 0.5rem 0;
+	}
+	.bc-title {
+		font-weight: 700;
+		font-size: 0.95rem;
+		margin: 0 0 0.5rem !important;
+	}
+	svg {
+		width: 100%;
+		height: auto;
+		display: block;
+		font-family: inherit;
+	}
+	.lbl {
+		font-size: 14px;
+		fill: var(--text);
+	}
+	.val {
+		font-size: 14px;
+		font-weight: 700;
+		fill: var(--text);
+	}
+	.note {
+		font-size: 12px;
+		fill: var(--muted);
+	}
+	.bar {
+		fill: var(--muted);
+		opacity: 0.4;
+	}
+	.bar.on {
+		fill: var(--accent);
+		opacity: 1;
+	}
+</style>

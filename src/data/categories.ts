@@ -19,3 +19,9 @@ export type CategoryId = (typeof CATEGORIES)[number]['id'];
 export function categoryOf(id: CategoryId) {
 	return CATEGORIES.find((c) => c.id === id)!;
 }
+
+// 「第0部 前日譚」の形。月次収支は部の番号を付けない
+export function partLabel(id: CategoryId) {
+	const i = CATEGORIES.findIndex((c) => c.id === id);
+	return id === 'monthly' ? CATEGORIES[i].name : `第${i}部 ${CATEGORIES[i].name}`;
+}

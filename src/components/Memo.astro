@@ -1,0 +1,7 @@
+---
+// <Memo title="体験メモ">…</Memo>　本人の体験
+import Box from './Box.astro';
+const { title = '体験メモ' } = Astro.props;
+---
+
+<Box kind="memo" title={title}><slot /></Box>

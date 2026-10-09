@@ -8,6 +8,13 @@
 	--subtle: #f4f5f6;
 	--accent: #1f6f6a;
 	--link: #1f6f6a;
+	--accent-soft: #e8f3f2;
+	--accent-strong: #17534f;
+	--warn: #b4532a;
+	--warn-soft: #fbf0ea;
+	--memo: #5a6b8c;
+	--memo-soft: #eef1f7;
+	--page: #f6f8f8;
 	--measure: 720px;
 	--wide: 1080px;
 	color-scheme: light;
@@ -22,6 +29,13 @@
 		--subtle: #202327;
 		--accent: #3fa79f;
 		--link: #5cc1b9;
+		--accent-soft: #1b2e2d;
+		--accent-strong: #5cc1b9;
+		--warn: #c9714a;
+		--warn-soft: #2d221d;
+		--memo: #7486a8;
+		--memo-soft: #1f2430;
+		--page: #111315;
 		color-scheme: dark;
 	}
 }
@@ -75,16 +89,38 @@ h1 {
 }
 
 /* 記事・固定ページの本文 */
+/* h2：色の帯＋左の太線。h3：下線の短い色線で h2 と見分ける */
 .prose h2 {
 	font-size: 1.3rem;
-	margin: 2.5rem 0 1rem;
-	padding-bottom: 0.3rem;
-	border-bottom: 2px solid var(--line);
+	margin: 3rem 0 1.25rem;
+	padding: 0.55rem 0.9rem;
+	background: var(--accent-soft);
+	border-left: 6px solid var(--accent);
+	border-radius: 0 6px 6px 0;
+	scroll-margin-top: 1rem;
 }
 
 .prose h3 {
-	font-size: 1.1rem;
-	margin: 2rem 0 0.75rem;
+	font-size: 1.12rem;
+	margin: 2.2rem 0 0.8rem;
+	padding-bottom: 0.25rem;
+	border-bottom: 2px solid var(--line);
+	position: relative;
+	scroll-margin-top: 1rem;
+}
+
+.prose h3::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	bottom: -2px;
+	width: 3em;
+	height: 2px;
+	background: var(--accent);
+}
+
+.prose strong {
+	background: linear-gradient(transparent 62%, var(--accent-soft) 62%);
 }
 
 .prose p,
@@ -112,6 +148,7 @@ h1 {
 /* 表はスマホで横スクロール */
 .prose table {
 	display: block;
+	max-width: 100%;
 	overflow-x: auto;
 	border-collapse: collapse;
 	margin: 0 0 1.5rem;
@@ -130,7 +167,7 @@ h1 {
 }
 
 .prose th {
-	background: var(--subtle);
+	background: var(--accent-soft);
 	white-space: nowrap;
 }
 

@@ -1,0 +1,82 @@
+---
+// 運営者のプロフィール（記事末・サイドバー）
+import { AUTHOR, X_URL } from '../consts';
+const { label = 'この記事を書いた人' } = Astro.props;
+---
+
+<section class="profile" aria-label={label}>
+	<div class="head">
+		<img src="/favicon.svg" alt="" width="56" height="56" />
+		<div>
+			<p class="label">{label}</p>
+			<p class="name">{AUTHOR}</p>
+		</div>
+	</div>
+	<p class="bio">
+		適応障害で休職し、会社員を辞めました。<br />
+		解散する日まで先に決めて、ひとり法人を作りました。<br />
+		設立から解散まで、お金と手続きを実数で書いています。
+	</p>
+	<p class="links">
+		<a href="/author/">運営者情報</a>
+		{
+			X_URL && (
+				<a class="x" href={X_URL} rel="me noopener" target="_blank">
+					Xでフォロー
+				</a>
+			)
+		}
+	</p>
+</section>
+
+<style>
+	.profile {
+		border: 1px solid var(--line);
+		border-top: 4px solid var(--accent);
+		border-radius: 10px;
+		padding: 1rem 1.1rem;
+		background: var(--bg);
+	}
+	.head {
+		display: flex;
+		align-items: center;
+		gap: 0.8rem;
+	}
+	.head img {
+		border-radius: 12px;
+		border: 1px solid var(--line);
+		flex: none;
+	}
+	.label {
+		margin: 0;
+		font-size: 0.75rem;
+		color: var(--muted);
+	}
+	.name {
+		margin: 0;
+		font-weight: 700;
+		font-size: 1.1rem;
+	}
+	.bio {
+		margin: 0.8rem 0;
+		font-size: 0.9rem;
+		line-height: 1.75;
+	}
+	.links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1rem;
+		align-items: center;
+		margin: 0;
+		font-size: 0.85rem;
+	}
+	.x {
+		display: inline-block;
+		background: var(--text);
+		color: var(--bg);
+		border-radius: 999px;
+		padding: 0.3rem 0.9rem;
+		text-decoration: none;
+		font-weight: 700;
+	}
+</style>

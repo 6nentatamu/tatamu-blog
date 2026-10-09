@@ -1,0 +1,42 @@
+---
+// X でシェアするボタン
+import { SITE_TITLE } from '../consts';
+interface Props {
+	title: string;
+}
+const url = new URL(Astro.url.pathname, Astro.site).toString();
+const text = `${Astro.props.title}｜${SITE_TITLE}`;
+const href = `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+---
+
+<div class="share">
+	<p>この記事が役に立ったら</p>
+	<a href={href} target="_blank" rel="noopener">Xでシェアする</a>
+</div>
+
+<style>
+	.share {
+		margin-top: 2.5rem;
+		text-align: center;
+		padding: 1.25rem 1rem;
+		border-radius: 10px;
+		background: var(--accent-soft);
+	}
+	p {
+		margin: 0 0 0.6rem;
+		font-size: 0.9rem;
+		color: var(--muted);
+	}
+	a {
+		display: inline-block;
+		background: #111;
+		color: #fff;
+		font-weight: 700;
+		padding: 0.65rem 1.6rem;
+		border-radius: 999px;
+		text-decoration: none;
+	}
+	a:hover {
+		opacity: 0.85;
+	}
+</style>

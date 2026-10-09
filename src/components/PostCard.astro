@@ -1,0 +1,85 @@
+---
+// 記事カード（アイキャッチ・部の名前・タイトル・読了時間）
+import type { CollectionEntry } from 'astro:content';
+import { partLabel } from '../data/categories';
+import { ogPath, readingMinutes } from '../lib/posts';
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+	post: CollectionEntry<'posts'>;
+	compact?: boolean;
+}
+const { post, compact = false } = Astro.props;
+---
+
+<article class:list={['card', { compact }]}>
+	<a href={`/posts/${post.id}/`} class="thumb" tabindex="-1" aria-hidden="true">
+		<img src={ogPath(post)} alt="" width="1200" height="630" loading="lazy" decoding="async" />
+	</a>
+	<div class="body">
+		<p class="part">{partLabel(post.data.category)}</p>
+		<h3><a href={`/posts/${post.id}/`}>{post.data.title}</a></h3>
+		<p class="meta">
+			<FormattedDate date={post.data.pubDate} />
+			<span>・{readingMinutes(post)}分で読めます</span>
+		</p>
+	</div>
+</article>
+
+<style>
+	.card {
+		display: flex;
+		flex-direction: column;
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		overflow: hidden;
+		background: var(--bg);
+		transition:
+			box-shadow 0.15s,
+			transform 0.15s;
+	}
+	.card:hover {
+		box-shadow: 0 6px 18px rgb(0 0 0 / 0.08);
+		transform: translateY(-2px);
+	}
+	.thumb img {
+		display: block;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 1200 / 630;
+	}
+	.body {
+		padding: 0.8rem 1rem 1rem;
+	}
+	.part {
+		display: inline-block;
+		margin: 0 0 0.35rem;
+		font-size: 0.75rem;
+		font-weight: 700;
+		color: var(--accent);
+		background: var(--accent-soft);
+		border-radius: 999px;
+		padding: 0.05rem 0.6rem;
+	}
+	h3 {
+		font-size: 1rem;
+		line-height: 1.55;
+		margin: 0 0 0.4rem;
+	}
+	h3 a {
+		color: var(--text);
+		text-decoration: none;
+	}
+	h3 a:hover {
+		color: var(--link);
+		text-decoration: underline;
+	}
+	.meta {
+		margin: 0;
+		font-size: 0.8rem;
+		color: var(--muted);
+	}
+	.compact h3 {
+		font-size: 0.95rem;
+	}
+</style>

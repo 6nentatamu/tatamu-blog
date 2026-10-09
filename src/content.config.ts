@@ -16,6 +16,8 @@ const posts = defineCollection({
 		order: z.number().optional(),
 		tags: z.array(z.string()).default([]),
 		// アフィリエイトを含む記事は true（冒頭にPR表記が出る）
+		// 冒頭の「この記事の結論」ボックス（3行以内）
+		summary: z.string().optional(),
 		pr: z.boolean().default(false),
 		// true のあいだは本番ビルドに出さない
 		draft: z.boolean().default(false),

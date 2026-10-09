@@ -1,57 +1,37 @@
 ---
+// 記事一覧（アイキャッチつきカードのグリッド）
 import type { CollectionEntry } from 'astro:content';
-import { categoryOf } from '../data/categories';
-import FormattedDate from './FormattedDate.astro';
+import PostCard from './PostCard.astro';
 
 interface Props {
 	posts: CollectionEntry<'posts'>[];
+	cols?: 2 | 3;
 }
-const { posts } = Astro.props;
+const { posts, cols = 2 } = Astro.props;
 ---
 
 {posts.length === 0 && <p class="empty">まだ記事はありません。</p>}
-<ul class="post-list">
-	{
-		posts.map((p) => (
-			<li>
-				<a href={`/posts/${p.id}/`}>{p.data.title}</a>
-				<p class="meta">
-					<a href={`/category/${p.data.category}/`}>{categoryOf(p.data.category).name}</a>
-					<span>・</span>
-					<FormattedDate date={p.data.pubDate} />
-				</p>
-				<p class="desc">{p.data.description}</p>
-			</li>
-		))
-	}
-</ul>
+<div class:list={['grid', `c${cols}`]}>
+	{posts.map((p) => <PostCard post={p} compact={cols === 3} />)}
+</div>
 
 <style>
-	.post-list {
-		list-style: none;
-		padding: 0;
-		margin: 0;
+	.grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 1.25rem;
 	}
-	li {
-		padding: 1rem 0;
-		border-bottom: 1px solid var(--line);
+	@media (min-width: 600px) {
+		.grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
 	}
-	li > a {
-		font-weight: 700;
-		font-size: 1.05rem;
+	@media (min-width: 900px) {
+		.c3 {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
 	}
-	.meta {
-		margin: 0.25rem 0;
-		font-size: 0.8rem;
-		color: var(--muted);
-	}
-	.meta a {
-		color: var(--muted);
-	}
-	.desc,
 	.empty {
-		margin: 0;
-		font-size: 0.9rem;
 		color: var(--muted);
 	}
 </style>

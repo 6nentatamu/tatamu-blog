@@ -1,0 +1,7 @@
+---
+// <Point>…</Point>　本文の要点（title で見出しを変えられる）
+import Box from './Box.astro';
+const { title = 'ポイント' } = Astro.props;
+---
+
+<Box kind="point" title={title}><slot /></Box>

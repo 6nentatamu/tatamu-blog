@@ -1,0 +1,64 @@
+---
+// 目次。見出し（h2/h3）が4つ以上あるときだけ出す
+import type { MarkdownHeading } from 'astro';
+interface Props {
+	headings: MarkdownHeading[];
+}
+const items = Astro.props.headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+{
+	items.length >= 4 && (
+		<nav class="toc" aria-label="目次">
+			<p class="title">目次</p>
+			<ol>
+				{items.map((h) => (
+					<li class={`d${h.depth}`}>
+						<a href={`#${h.slug}`}>{h.text}</a>
+					</li>
+				))}
+			</ol>
+		</nav>
+	)
+}
+
+<style>
+	.toc {
+		background: var(--subtle);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 0.9rem 1.2rem;
+		margin: 0 0 2rem;
+	}
+	.title {
+		margin: 0 0 0.3rem;
+		font-weight: 700;
+		color: var(--accent);
+	}
+	ol {
+		margin: 0;
+		padding-left: 1.3rem;
+		font-size: 0.92rem;
+		line-height: 1.7;
+	}
+	li + li {
+		margin-top: 0.2rem;
+	}
+	.d3 {
+		list-style: none;
+		margin-left: 0.4rem;
+		font-size: 0.86rem;
+	}
+	.d3::before {
+		content: '└ ';
+		color: var(--muted);
+	}
+	a {
+		color: var(--text);
+		text-decoration: none;
+	}
+	a:hover {
+		color: var(--link);
+		text-decoration: underline;
+	}
+</style>

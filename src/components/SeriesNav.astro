@@ -15,18 +15,37 @@ const cat = categoryOf(category);
 <nav class="series-nav" aria-label="連載の前後">
 	<p class="label">連載「{cat.name}」</p>
 	<div class="links">
-		{prev ? <a href={`/posts/${prev.id}/`}>← {prev.data.title}</a> : <span />}
-		{next ? <a href={`/posts/${next.id}/`}>{next.data.title} →</a> : <span />}
+		{
+			prev ? (
+				<a class="prev" href={`/posts/${prev.id}/`}>
+					<small>← 前の記事</small>
+					{prev.data.title}
+				</a>
+			) : (
+				<span />
+			)
+		}
+		{
+			next ? (
+				<a class="next" href={`/posts/${next.id}/`}>
+					<small>次の記事 →</small>
+					{next.data.title}
+				</a>
+			) : (
+				<span />
+			)
+		}
 	</div>
 	<p class="all"><a href="/series/">連載目次を見る</a></p>
 </nav>
 
 <style>
 	.series-nav {
-		margin-top: 3rem;
+		margin-top: 2rem;
 		padding: 1rem;
 		border: 1px solid var(--line);
-		border-radius: 8px;
+		border-radius: 10px;
+		background: var(--subtle);
 	}
 	.label {
 		margin: 0 0 0.5rem;
@@ -34,10 +53,37 @@ const cat = categoryOf(category);
 		color: var(--muted);
 	}
 	.links {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: space-between;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
 		gap: 0.75rem;
+	}
+	@media (min-width: 600px) {
+		.links {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+	.links a {
+		display: block;
+		padding: 0.7rem 0.9rem;
+		border-radius: 8px;
+		background: var(--bg);
+		border: 1px solid var(--line);
+		text-decoration: none;
+		font-weight: 700;
+		font-size: 0.92rem;
+		line-height: 1.55;
+	}
+	.links a:hover {
+		border-color: var(--accent);
+	}
+	.links small {
+		display: block;
+		font-weight: 400;
+		color: var(--muted);
+		font-size: 0.78rem;
+	}
+	.next {
+		text-align: right;
 	}
 	.all {
 		margin: 0.75rem 0 0;

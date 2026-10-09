@@ -1,9 +1,11 @@
 ---
 // 記事ページのサイドバー（スマホでは本文の下）。使ったサービスを出す。
 import { SERVICES } from '../data/services';
+import ProfileBox from './ProfileBox.astro';
 ---
 
 <aside class="sidebar">
+	<ProfileBox />
 	<h2>使ったサービス</h2>
 	<ul>
 		{
@@ -34,7 +36,9 @@ import { SERVICES } from '../data/services';
 	}
 	h2 {
 		font-size: 0.95rem;
-		margin: 0 0 0.5rem;
+		margin: 1.75rem 0 0.5rem;
+		padding-left: 0.6rem;
+		border-left: 4px solid var(--accent);
 	}
 	ul {
 		list-style: none;
