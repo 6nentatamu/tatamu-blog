@@ -1,0 +1,107 @@
+---
+import EntryCards from '../../components/EntryCards.astro';
+import PostList from '../../components/PostList.astro';
+import ProfileBox from '../../components/ProfileBox.astro';
+import SixYearScale from '../../components/SixYearScale.astro';
+import { CURRENT_YEAR, SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+import Base from '../../layouts/Base.astro';
+import { entries, facts, lead } from './_data';
+import { load } from './_common';
+const { latest, parts } = await load();
+---
+<Base title={`案B ${SITE_TITLE}`} description={SITE_DESCRIPTION}>
+	<meta slot="head" name="robots" content="noindex" />
+	<section class="blk teal">
+		<svg class="fold" viewBox="0 0 400 400" aria-hidden="true">
+			<polygon points="0,0 400,0 200,200" fill="#ffffff14" />
+			<polygon points="400,0 400,400 200,200" fill="#00000022" />
+			<polygon points="0,400 400,400 200,200" fill="#ffffff0a" />
+			<polygon points="0,0 0,400 200,200" fill="#0000000f" />
+			<line x1="0" y1="0" x2="400" y2="400" stroke="#ffffff55" stroke-dasharray="6 6" />
+			<line x1="400" y1="0" x2="0" y2="400" stroke="#ffffff55" stroke-dasharray="6 6" />
+			<line x1="200" y1="0" x2="200" y2="400" stroke="#ffffff33" stroke-dasharray="2 8" />
+		</svg>
+		<div class="in hero">
+			<div>
+				<p class="eyebrow">ひとり法人の設立から解散までの記録</p>
+				<h1>解散日まで決めて、<br />ひとり法人を作りました。</h1>
+				<p class="lead">{lead}</p>
+				<div class="cta">
+					<a class="start" href="/hajimeni/">はじめに読む →</a>
+					<a class="sub" href="/series/">連載目次</a>
+				</div>
+			</div>
+			<div class="scalewrap"><SixYearScale current={CURRENT_YEAR} /></div>
+		</div>
+	</section>
+	<section class="blk ink">
+		<div class="in">
+			<ul class="facts">
+				{facts.map((f, i) => (
+					<li><a href={f.href}><span class="idx">0{i + 1}</span><span class="fv">{f.value}</span><span class="fl">{f.label}</span></a></li>
+				))}
+			</ul>
+		</div>
+	</section>
+	<section class="blk paper">
+		<div class="in"><EntryCards items={entries} /></div>
+	</section>
+	<section class="blk white">
+		<div class="in">
+			<h2 class="sec"><span class="pin" />新着記事</h2>
+			<PostList posts={latest} cols={3} />
+		</div>
+	</section>
+	<section class="blk teal parts-blk">
+		<div class="in">
+			<h2 class="sec light">連載</h2>
+			<ol class="parts">
+				{parts.map((c, i) => (
+					<li>
+						<span class="bigno" aria-hidden="true">{i}</span>
+						<a href={`/series/#part-${i}`}><span class="no">第{i}部</span><span class="name">{c.name}</span></a>
+						<p>{c.lead}</p>
+					</li>
+				))}
+			</ol>
+			<p><a class="more" href="/series/">連載目次（全記事）→</a></p>
+		</div>
+	</section>
+	<section class="blk paper"><div class="in about"><ProfileBox label="書いている人" /></div></section>
+</Base>
+<style>
+	.blk { position: relative; overflow: hidden; padding: 3rem 0; }
+	.in { position: relative; max-width: var(--wide); margin: 0 auto; padding: 0 1rem; }
+	.teal { background: #1f6f6a; color: #f4f1ea; }
+	.ink { background: #26231f; color: #f4f1ea; padding: 2rem 0; }
+	.paper { background: #f4f1ea; }
+	.white { background: var(--bg); }
+	.fold { position: absolute; right: -80px; top: -40px; width: min(560px, 90vw); height: auto; opacity: .9; }
+	.hero { display: grid; gap: 2rem; align-items: center; }
+	@media (min-width: 860px) { .hero { grid-template-columns: 1.15fr 1fr; } }
+	.eyebrow { font-weight: 700; font-size: .85rem; letter-spacing: .08em; margin: 0 0 .8rem; color: #f7e6e0; }
+	h1 { font-family: var(--mincho); font-size: clamp(1.9rem, 6vw, 3.4rem); line-height: 1.3; margin: 0 0 1rem; }
+	.lead { color: #e2ece9; margin: 0 0 1.5rem; }
+	.cta { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+	.start { background: #c8553d; color: #fff; padding: .8rem 1.6rem; font-weight: 700; text-decoration: none; box-shadow: 4px 4px 0 #26231f; }
+	.sub { color: #fff; font-weight: 700; }
+	.scalewrap { color: var(--text); transform: rotate(-1.5deg); box-shadow: 8px 8px 0 #17534f; }
+	.facts { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; }
+	@media (min-width: 760px) { .facts { grid-template-columns: repeat(3, 1fr); } }
+	.facts a { display: block; color: inherit; text-decoration: none; border-left: 4px solid #c8553d; padding-left: .9rem; }
+	.idx { display: block; font-size: .75rem; color: #c8553d; font-weight: 700; letter-spacing: .15em; }
+	.fv { display: block; font-family: var(--mincho); font-size: clamp(1.6rem, 4vw, 2.3rem); font-weight: 700; font-variant-numeric: tabular-nums; }
+	.fl { font-size: .85rem; color: #cfc8ba; }
+	.sec { font-family: var(--mincho); font-size: clamp(1.5rem, 4vw, 2.2rem); margin: 0 0 1.2rem; display: flex; align-items: center; gap: .6rem; }
+	.pin { width: 18px; height: 18px; background: #c8553d; clip-path: polygon(0 0, 100% 0, 0 100%); }
+	.light { color: #fff; }
+	.parts { list-style: none; padding: 0; margin: 0 0 1rem; display: grid; gap: 1rem; }
+	@media (min-width: 720px) { .parts { grid-template-columns: repeat(3, 1fr); } }
+	.parts li { position: relative; overflow: hidden; background: #f4f1ea; color: var(--text); padding: 1.2rem 1rem 1rem; min-height: 9rem; clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 0 100%); }
+	.bigno { position: absolute; right: .4rem; bottom: -1.6rem; font-family: var(--mincho); font-size: 7rem; font-weight: 700; line-height: 1; color: #1f6f6a22; }
+	.parts a { position: relative; text-decoration: none; color: var(--text); font-weight: 700; font-family: var(--mincho); font-size: 1.15rem; }
+	.no { display: block; color: #c8553d; font-size: .8rem; font-family: system-ui; }
+	.parts p { position: relative; margin: .4rem 0 0; font-size: .875rem; color: var(--muted); }
+	.more { color: #fff; font-weight: 700; }
+	.about { max-width: 560px; }
+</style>

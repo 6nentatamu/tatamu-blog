@@ -18,6 +18,7 @@ const { title, description, image, calm = false } = Astro.props;
 <html lang="ja">
 	<head>
 		<BaseHead title={title} description={description} image={image} />
+		<slot name="head" />
 	</head>
 	<body>
 		<Header calm={calm} />
