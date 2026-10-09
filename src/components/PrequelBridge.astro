@@ -1,0 +1,53 @@
+---
+// 前日譚の記事末に出す「この先の本編へ」の橋
+import EntryCards from './EntryCards.astro';
+
+interface Props {
+	last?: boolean; // 前日譚の最終話（prequel-5）なら true
+}
+const { last = false } = Astro.props;
+const cards = [
+	{
+		kicker: '第1部 構想',
+		title: 'なぜ法人を考えたか',
+		text: '国保・年金の負担を、個人のままと法人で比べました。',
+		links: [{ href: '/series/#part-1', label: '第1部の記事を見る' }],
+	},
+	{
+		kicker: '第2部 設計',
+		title: '作る前に決めたこと',
+		text: '役員報酬・資金計画・6年後の解散まで、設立前に決めた中身です。',
+		links: [{ href: '/series/#part-2', label: '第2部の記事を見る' }],
+	},
+];
+---
+
+<section class="bridge" aria-label="この先の本編へ">
+	<p class="b-title">この先の本編へ</p>
+	<p class="b-lead">
+		{
+			last
+				? '前日譚はここまでです。ここからは、法人を作ると決めたあとの話になります。'
+				: '前日譚のあと、法人を作ると決めてからの話は本編に書いています。'
+		}
+	</p>
+	<EntryCards items={cards} />
+</section>
+
+<style>
+	.bridge {
+		margin-top: 2.5rem;
+	}
+	.b-title {
+		font-weight: 700;
+		font-size: 1.1rem;
+		margin: 0 0 0.3rem;
+		padding-left: 0.7rem;
+		border-left: 5px solid var(--accent);
+	}
+	.b-lead {
+		margin: 0 0 1rem;
+		font-size: 0.92rem;
+		color: var(--muted);
+	}
+</style>

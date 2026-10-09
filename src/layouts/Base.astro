@@ -8,8 +8,10 @@ interface Props {
 	description: string;
 	// 共有時の画像（og:image）。省略時はサイト共通の画像
 	image?: string;
+	// 前日譚のページ：朱を出さない
+	calm?: boolean;
 }
-const { title, description, image } = Astro.props;
+const { title, description, image, calm = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -18,7 +20,7 @@ const { title, description, image } = Astro.props;
 		<BaseHead title={title} description={description} image={image} />
 	</head>
 	<body>
-		<Header />
+		<Header calm={calm} />
 		<slot />
 		<Footer />
 	</body>

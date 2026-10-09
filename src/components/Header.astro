@@ -1,5 +1,9 @@
 ---
 import { SITE_TITLE } from '../consts';
+import SixYearScale from './SixYearScale.astro';
+
+// calm: 前日譚のページでは朱を出さない
+const { calm = false } = Astro.props;
 
 const links = [
 	{ href: '/hajimeni/', label: 'はじめに' },
@@ -12,7 +16,10 @@ const path = Astro.url.pathname;
 
 <header class="site-header">
 	<div class="inner">
-		<a class="site-title" href="/"><img src="/favicon.svg" alt="" aria-hidden="true" width="24" height="24" />{SITE_TITLE}</a>
+		<div class="brand">
+			<a class="site-title mincho" href="/"><img src="/favicon.svg" alt="" aria-hidden="true" width="24" height="24" />{SITE_TITLE}</a>
+			<a class="gauge" href="/hajimeni/"><SixYearScale size="mini" calm={calm} /></a>
+		</div>
 		<nav aria-label="メイン">
 			{
 				links.map((l) => (
@@ -41,9 +48,19 @@ const path = Astro.url.pathname;
 		justify-content: space-between;
 		gap: 0.5rem 1.5rem;
 	}
+	.brand {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.3rem 1rem;
+	}
+	.gauge {
+		text-decoration: none;
+	}
 	.site-title {
 		font-weight: 700;
-		font-size: 1.1rem;
+		font-size: 1.2rem;
+		letter-spacing: 0.04em;
 		color: var(--text);
 		text-decoration: none;
 		display: inline-flex;

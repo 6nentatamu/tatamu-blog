@@ -1,16 +1,45 @@
 ---
+import EntryCards from '../components/EntryCards.astro';
 import PostList from '../components/PostList.astro';
 import ProfileBox from '../components/ProfileBox.astro';
 import SixYearScale from '../components/SixYearScale.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { CURRENT_YEAR, SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 import { CATEGORIES } from '../data/categories';
 import Base from '../layouts/Base.astro';
-import { getPosts, ogPath } from '../lib/posts';
+import { getPosts } from '../lib/posts';
 
 const posts = await getPosts();
-const latest = posts.filter((p) => p.data.category !== 'monthly').slice(0, 6);
-const monthly = posts.find((p) => p.data.category === 'monthly');
+// 新着は法人の本編・月次だけ。前日譚は入口側に置き、新着を埋めない
+const latest = posts.filter((p) => p.data.category !== 'prequel').slice(0, 6);
 const parts = CATEGORIES.filter((c) => c.id !== 'monthly');
+
+// 最初の画面に出す実数（サイト内記事の数字）
+const facts = [
+	{ value: '年約14.4万円', label: 'FIREより法人が得だった差', href: '/posts/prequel-5-hojin/' },
+	{ value: '68,590円', label: '設立費用の実額', href: '/posts/monthly-y1-01/' },
+];
+
+const entries = [
+	{
+		kicker: '休職・退職を考えている方へ',
+		title: '適応障害で休職し、辞めるまで',
+		text: '休職の手続き、退職の判断、健康保険とハローワーク。体調が悪い中でやったことを順に書いています。',
+		links: [
+			{ href: '/posts/prequel-1-kyushoku/', label: '前日譚の1話目から読む' },
+			{ href: '/series/#part-0', label: '第0部 前日譚の目次' },
+		],
+	},
+	{
+		kicker: 'FIREか法人化かで迷っている方へ',
+		title: '働かずに暮らすなら、法人は得か',
+		text: '国保・年金・税を個人のままと法人で比べ、6年でたたむ法人に決めました。設計の中身も実数で書いています。',
+		links: [
+			{ href: '/posts/prequel-5-hojin/', label: 'マイクロ法人にした理由' },
+			{ href: '/series/#part-1', label: '第1部 構想' },
+			{ href: '/series/#part-2', label: '第2部 設計' },
+		],
+	},
+];
 ---
 
 <Base title={SITE_TITLE} description={SITE_DESCRIPTION}>
@@ -22,34 +51,38 @@ const parts = CATEGORIES.filter((c) => c.id !== 'monthly');
 				<p class="lead">
 					適応障害で会社員を辞めたあと、6年でたたむと決めて法人を作りました。設立費用・役員報酬・社会保険・解散の税務を、実際の数字で書いています。
 				</p>
+				<ul class="facts">
+					{
+						facts.map((f) => (
+							<li>
+								<a href={f.href}>
+									<span class="fv">{f.value}</span>
+									<span class="fl">{f.label}</span>
+								</a>
+							</li>
+						))
+					}
+				</ul>
 				<div class="cta">
 					<a class="start" href="/hajimeni/">はじめに読む →</a>
 					<a class="sub" href="/series/">連載目次</a>
 				</div>
 			</div>
 			<div class="hero-fig">
-				<SixYearScale current={1} />
+				<SixYearScale current={CURRENT_YEAR} />
 			</div>
 		</div>
 	</section>
 
 	<main class="container wide">
+		<section class="entry-sec" aria-label="入口">
+			<EntryCards items={entries} />
+		</section>
+
 		<section>
 			<h2 class="sec">新着記事</h2>
 			<PostList posts={latest} cols={3} />
 		</section>
-
-		{
-			monthly && (
-				<section>
-					<h2 class="sec">最新の月次収支</h2>
-					<a class="monthly" href={`/posts/${monthly.id}/`}>
-						<img src={ogPath(monthly)} alt="" width="1200" height="630" loading="lazy" />
-						<span>{monthly.data.title}</span>
-					</a>
-				</section>
-			)
-		}
 
 		<section>
 			<h2 class="sec">連載</h2>
@@ -57,7 +90,7 @@ const parts = CATEGORIES.filter((c) => c.id !== 'monthly');
 				{
 					parts.map((c, i) => (
 						<li>
-							<a href={`/category/${c.id}/`}>
+							<a href={`/series/#part-${i}`}>
 								<span class="no">第{i}部</span>
 								<span class="name">{c.name}</span>
 							</a>
@@ -77,7 +110,7 @@ const parts = CATEGORIES.filter((c) => c.id !== 'monthly');
 
 <style>
 	.hero {
-		background: linear-gradient(180deg, var(--accent-soft), var(--bg));
+		background: var(--page);
 		border-bottom: 1px solid var(--line);
 	}
 	.hero-inner {
@@ -125,13 +158,44 @@ const parts = CATEGORIES.filter((c) => c.id !== 'monthly');
 		color: #fff;
 		font-weight: 700;
 		text-decoration: none;
-		box-shadow: 0 4px 12px rgb(31 111 106 / 0.3);
+		
 	}
 	.start:hover {
 		background: var(--accent-strong);
 	}
 	.sub {
 		font-weight: 700;
+	}
+	.facts {
+		list-style: none;
+		margin: 0 0 1.25rem;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+	}
+	.facts a {
+		display: flex;
+		flex-direction: column;
+		padding: 0.45rem 0.9rem;
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-radius: 8px;
+		text-decoration: none;
+		color: var(--text);
+	}
+	.fv {
+		font-size: 1.35rem;
+		font-weight: 700;
+		color: var(--accent-strong);
+		line-height: 1.35;
+	}
+	.fl {
+		font-size: 0.78rem;
+		color: var(--muted);
+	}
+	.entry-sec {
+		margin-top: 1.75rem;
 	}
 	.wide {
 		max-width: var(--wide);
@@ -144,29 +208,6 @@ const parts = CATEGORIES.filter((c) => c.id !== 'monthly');
 		margin: 0 0 1rem;
 		padding-left: 0.7rem;
 		border-left: 6px solid var(--accent);
-	}
-	.monthly {
-		display: grid;
-		grid-template-columns: 160px 1fr;
-		gap: 1rem;
-		align-items: center;
-		border: 1px solid var(--line);
-		border-radius: 10px;
-		padding: 0.75rem;
-		text-decoration: none;
-		color: var(--text);
-		font-weight: 700;
-	}
-	.monthly img {
-		width: 100%;
-		height: auto;
-		border-radius: 6px;
-	}
-	@media (max-width: 520px) {
-		.monthly {
-			grid-template-columns: 110px 1fr;
-			font-size: 0.95rem;
-		}
 	}
 	.parts {
 		list-style: none;
@@ -185,7 +226,7 @@ const parts = CATEGORIES.filter((c) => c.id !== 'monthly');
 		border-top: 3px solid var(--accent);
 		border-radius: 8px;
 		padding: 0.9rem 1rem;
-		background: var(--bg);
+		background: var(--card);
 	}
 	.parts a {
 		text-decoration: none;

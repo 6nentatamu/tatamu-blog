@@ -15,3 +15,8 @@ export const NOINDEX = true;
 
 // お問い合わせ用 Google フォームの共有URL（例: 'https://forms.gle/XXXX'）。空のあいだは「準備中」と表示
 export const CONTACT_FORM_URL = 'https://forms.gle/htr6zHkPnBw14to88';
+
+// 6年ゲージ。今が何年目か（年が変わったら手で1つ進める）。記事の「この記事は○年目に書きました」もこれを使う。
+// 日・月・年月は出さない（品質基準 D1）。月次記事は frontmatter の year があればそちらを優先する。
+export const TOTAL_YEARS = 6;
+export const CURRENT_YEAR = 1;

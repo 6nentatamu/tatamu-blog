@@ -1,0 +1,75 @@
+---
+// 「この記事の数字」カード。frontmatter の keyNumbers（最大3つ）を大きく出す
+interface Props {
+	items: { label: string; value: string; note?: string }[];
+}
+const { items } = Astro.props;
+---
+
+<section class="keynums" aria-label="この記事の数字">
+	<p class="kn-title">この記事の数字</p>
+	<dl class:list={['kn-grid', `n${items.length}`]}>
+		{
+			items.map((k) => (
+				<div class="kn">
+					<dt>{k.label}</dt>
+					<dd class="v">{k.value}</dd>
+					{k.note && <dd class="note">{k.note}</dd>}
+				</div>
+			))
+		}
+	</dl>
+</section>
+
+<style>
+	.keynums {
+		margin: 0 0 1.75rem;
+	}
+	.kn-title {
+		margin: 0 0 0.5rem;
+		font-size: 0.85rem;
+		font-weight: 700;
+		color: var(--muted);
+	}
+	.kn-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 0.6rem;
+		margin: 0;
+	}
+	@media (min-width: 560px) {
+		.n2 {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+		.n3 {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+	.kn {
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-left: 4px solid var(--accent);
+		border-radius: 8px;
+		padding: 0.7rem 0.9rem;
+	}
+	dt {
+		font-size: 0.82rem;
+		color: var(--muted);
+		line-height: 1.5;
+	}
+	dd {
+		margin: 0;
+	}
+	.v {
+		font-size: 1.75rem;
+		font-weight: 700;
+		line-height: 1.3;
+		color: var(--accent-strong);
+		font-variant-numeric: tabular-nums;
+	}
+	.note {
+		font-size: 0.78rem;
+		color: var(--muted);
+		line-height: 1.5;
+	}
+</style>

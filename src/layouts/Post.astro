@@ -1,7 +1,10 @@
 ---
 import type { MarkdownHeading } from 'astro';
 import type { CollectionEntry } from 'astro:content';
-import FormattedDate from '../components/FormattedDate.astro';
+import KeyNumbers from '../components/KeyNumbers.astro';
+import PrequelBridge from '../components/PrequelBridge.astro';
+import SourcesBox from '../components/SourcesBox.astro';
+import { CURRENT_YEAR, TOTAL_YEARS } from '../consts';
 import PostList from '../components/PostList.astro';
 import PrNotice from '../components/PrNotice.astro';
 import ProfileBox from '../components/ProfileBox.astro';
@@ -21,27 +24,32 @@ interface Props {
 	related: CollectionEntry<'posts'>[];
 }
 const { post, prev, next, headings, related } = Astro.props;
-const { title, description, pubDate, updatedDate, category, tags, pr, summary } = post.data;
+const { title, description, updatedDate, category, tags, pr, summary, keyNumbers, sources, asOf } =
+	post.data;
+// 何年目に書いたか：月次は frontmatter の year、それ以外は固定値 CURRENT_YEAR
+const year = (category === 'monthly' && post.data.year) || CURRENT_YEAR;
+// 前日譚のページには朱を出さない
+const calm = category === 'prequel';
 const image = ogPath(post);
 ---
 
-<Base title={title} description={description} image={image}>
+<Base title={title} description={description} image={image} calm={calm}>
 	<div class="post-layout">
 		<main class="prose">
 			<article>
 				<p class="post-meta">
 					<a class="part" href={`/category/${category}/`}>{partLabel(category)}</a>
-					{category !== 'monthly' && <FormattedDate date={pubDate} />}
-					{
-						updatedDate && (
-							<span>
-								（更新 <FormattedDate date={updatedDate} />）
-							</span>
-						)
-					}
-					<span>・{readingMinutes(post)}分で読めます</span>
+					<span>{readingMinutes(post)}分で読めます</span>
 				</p>
 				<h1>{title}</h1>
+				<p class:list={['year-badge', { calm }]}>
+					<span class="cells" aria-hidden="true">
+						{Array.from({ length: TOTAL_YEARS }, (_, i) => (
+							<i class:list={[{ done: i + 1 < year, now: i + 1 === year }]} />
+						))}
+					</span>
+					この記事は{TOTAL_YEARS}年のうち<b>{year}年目</b>に書きました
+				</p>
 				<img class="eyecatch" src={image} alt="" width="1200" height="630" />
 				{pr && <PrNotice />}
 				{
@@ -52,6 +60,7 @@ const image = ogPath(post);
 						</section>
 					)
 				}
+				{keyNumbers && keyNumbers.length > 0 && <KeyNumbers items={keyNumbers} />}
 				<Toc headings={headings} />
 				<slot />
 				{
@@ -66,10 +75,12 @@ const image = ogPath(post);
 				<p class="disclaimer">
 					この記事は筆者1人の体験（n=1）です。制度や金額は執筆時点のもので、税務の判断は税理士に、体調の判断は医師にご相談ください。
 				</p>
+				<SourcesBox sources={sources} asOf={asOf} updatedDate={updatedDate} />
 			</article>
 			<div class="post-end">
 				<ProfileBox />
 				{category !== 'monthly' && <SeriesNav prev={prev} next={next} category={category} />}
+				{calm && <PrequelBridge last={!next} />}
 				{
 					related.length > 0 && (
 						<section class="related">
@@ -116,6 +127,49 @@ const image = ogPath(post);
 		padding: 0 0.7rem;
 		font-weight: 700;
 		text-decoration: none;
+	}
+	.year-badge {
+		--now: var(--deadline);
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin: -0.5rem 0 1rem;
+		padding: 0.2rem 0.75rem;
+		font-size: 0.82rem;
+		color: var(--muted);
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-radius: 999px;
+	}
+	.year-badge.calm {
+		--now: var(--accent);
+	}
+	.year-badge b {
+		color: var(--now);
+	}
+	.year-badge .cells {
+		display: inline-grid;
+		grid-template-columns: repeat(6, 6px);
+		gap: 2px;
+	}
+	.year-badge i {
+		display: block;
+		height: 11px;
+		border: 1.5px solid var(--muted);
+		opacity: 0.55;
+	}
+	.year-badge i.done {
+		background: var(--text);
+		border-color: var(--text);
+		opacity: 1;
+	}
+	.year-badge i.now {
+		background: var(--now);
+		border-color: var(--now);
+		opacity: 1;
+	}
+	h1 {
+		font-size: clamp(1.45rem, 4.8vw, 1.85rem);
 	}
 	.eyecatch {
 		display: block;

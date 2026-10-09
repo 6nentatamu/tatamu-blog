@@ -20,7 +20,7 @@ const parts = CATEGORIES.filter((c) => c.id !== 'monthly').map((c, i) => {
 		<p>前日譚から順に読むと、退職から法人の設立・運用までを時系列でたどれます。</p>
 		{
 			parts.map((part) => (
-				<section>
+				<section id={`part-${part.no}`}>
 					<h2>
 						第{part.no}部 {part.name}
 					</h2>

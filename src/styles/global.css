@@ -1,20 +1,25 @@
 /* モノトーン＋アクセント1色。スマホで読みやすいことを最優先にする。 */
 
 :root {
-	--bg: #ffffff;
-	--text: #1f2328;
-	--muted: #5c636b;
-	--line: #e3e5e8;
-	--subtle: #f4f5f6;
+	/* 地は彩度の低い生成り、文字は墨。朱（--deadline）は「期限」にだけ使う */
+	--bg: #faf8f4;
+	--text: #26231f;
+	--muted: #6b655c;
+	--line: #e4dfd5;
+	--subtle: #f2eee6;
+	--card: #fffdf9;
 	--accent: #1f6f6a;
 	--link: #1f6f6a;
-	--accent-soft: #e8f3f2;
+	--accent-soft: #e6efec;
 	--accent-strong: #17534f;
+	--deadline: #c8553d;
+	--deadline-soft: #f7e6e0;
 	--warn: #b4532a;
-	--warn-soft: #fbf0ea;
+	--warn-soft: #f8ede6;
 	--memo: #5a6b8c;
-	--memo-soft: #eef1f7;
-	--page: #f6f8f8;
+	--memo-soft: #edf0f5;
+	--page: #f4f1ea;
+	--mincho: 'Zen Old Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
 	--measure: 720px;
 	--wide: 1080px;
 	color-scheme: light;
@@ -22,20 +27,23 @@
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--bg: #16181b;
-		--text: #e6e8eb;
-		--muted: #9aa1a9;
-		--line: #2c3035;
-		--subtle: #202327;
+		--bg: #1b1a17;
+		--text: #e9e5dc;
+		--muted: #a59e92;
+		--line: #34312b;
+		--subtle: #24221e;
+		--card: #211f1b;
 		--accent: #3fa79f;
-		--link: #5cc1b9;
-		--accent-soft: #1b2e2d;
-		--accent-strong: #5cc1b9;
+		--link: #6cc5bd;
+		--accent-soft: #1d2d2a;
+		--accent-strong: #6cc5bd;
+		--deadline: #e07a62;
+		--deadline-soft: #3a2621;
 		--warn: #c9714a;
 		--warn-soft: #2d221d;
 		--memo: #7486a8;
 		--memo-soft: #1f2430;
-		--page: #111315;
+		--page: #161512;
 		color-scheme: dark;
 	}
 }
@@ -62,6 +70,14 @@ body {
 	letter-spacing: 0.02em;
 	word-break: normal;
 	overflow-wrap: anywhere;
+	font-variant-numeric: tabular-nums;
+}
+
+/* 明朝はロゴと h1 だけ */
+.mincho,
+h1 {
+	font-family: var(--mincho);
+	font-weight: 700;
 }
 
 a {

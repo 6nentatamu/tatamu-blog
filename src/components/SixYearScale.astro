@@ -1,60 +1,96 @@
 ---
-// トップの図：6年の目盛りと「今どこにいるか」。current は今の年目（1〜6）
+// 6年ゲージ（年単位）。経過＝塗り、今年＝朱、残り＝線。日・月・年月は出さない。
+// calm: 前日譚のページ用。朱を使わず青緑で今年を示す。
+// size: large＝トップのヒーロー、mini＝ヘッダー
+import { CURRENT_YEAR, TOTAL_YEARS } from '../consts';
+
 interface Props {
 	current?: number;
+	calm?: boolean;
+	size?: 'large' | 'mini';
 }
-const { current = 1 } = Astro.props;
-const years = [1, 2, 3, 4, 5, 6];
+const { current = CURRENT_YEAR, calm = false, size = 'large' } = Astro.props;
+const years = Array.from({ length: TOTAL_YEARS }, (_, i) => i + 1);
+const left = TOTAL_YEARS - current;
 ---
 
-<figure class="scale" aria-label={`6年の目盛り。今は${current}年目`}>
-	<p class="scale-head">
-		<span>設立</span>
-		<strong>6年で解散</strong>
-	</p>
-	<ol class="bars">
-		{
-			years.map((y) => (
-				<li class:list={[{ done: y < current, now: y === current }]}>
-					{y === current && <span class="here">今ここ</span>}
-					<span class="bar" />
-					<span class="yl">{y}年目</span>
-				</li>
-			))
-		}
-	</ol>
-	<figcaption>設立から解散まで6年。今は{current}年目です</figcaption>
-</figure>
+{
+	size === 'mini' ? (
+		<span class:list={['mini', { calm }]} aria-label={`${TOTAL_YEARS}年のうち${current}年目`}>
+			<span class="cells" aria-hidden="true">
+				{years.map((y) => (
+					<i class:list={[{ done: y < current, now: y === current }]} />
+				))}
+			</span>
+			<span class="mini-label">
+				{TOTAL_YEARS}年のうち<b>{current}</b>年目
+			</span>
+		</span>
+	) : (
+		<figure class:list={['scale', { calm }]} aria-label={`${TOTAL_YEARS}年のゲージ。今は${current}年目`}>
+			<p class="scale-head">
+				<span>
+					{TOTAL_YEARS}年のうち<strong class="big">{current}</strong>年目
+				</span>
+				<span class="left">
+					残り<strong>{left}</strong>年
+				</span>
+			</p>
+			<ol class="bars">
+				{years.map((y) => (
+					<li class:list={[{ done: y < current, now: y === current }]}>
+						<span class="bar" />
+						<span class="yl">{y}年目</span>
+					</li>
+				))}
+			</ol>
+			<figcaption>設立から解散まで{TOTAL_YEARS}年。塗りが過ぎた年、色が今年、線がこれからの年です</figcaption>
+		</figure>
+	)
+}
 
 <style>
 	.scale {
+		--now: var(--deadline);
 		margin: 0;
-		padding: 1.1rem 1.1rem 0.9rem;
-		background: var(--bg);
+		padding: 1.1rem 1.2rem 0.9rem;
+		background: var(--card);
 		border: 1px solid var(--line);
 		border-radius: 12px;
-		box-shadow: 0 6px 20px rgb(0 0 0 / 0.06);
+	}
+	.calm {
+		--now: var(--accent);
 	}
 	.scale-head {
 		display: flex;
 		justify-content: space-between;
-		margin: 0 0 0.4rem;
-		font-size: 0.85rem;
+		align-items: baseline;
+		margin: 0 0 0.8rem;
+		font-size: 0.95rem;
+	}
+	.big {
+		font-size: 2.4rem;
+		line-height: 1;
+		margin: 0 0.15rem;
+		color: var(--now);
+	}
+	.left {
 		color: var(--muted);
 	}
-	.scale-head strong {
+	.left strong {
+		font-size: 1.3rem;
 		color: var(--text);
+		margin: 0 0.1rem;
 	}
 	.bars {
 		list-style: none;
 		margin: 0;
-		padding: 1.9rem 0 0;
+		padding: 0;
 		display: grid;
 		grid-template-columns: repeat(6, minmax(0, 1fr));
 		gap: 0.45rem;
 	}
 	li {
-		position: relative;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -62,9 +98,9 @@ const years = [1, 2, 3, 4, 5, 6];
 	.bar {
 		display: block;
 		width: 100%;
-		height: 64px;
+		height: 56px;
 		border: 2px solid var(--muted);
-		opacity: 0.45;
+		opacity: 0.5;
 		border-radius: 3px;
 	}
 	.done .bar {
@@ -73,8 +109,8 @@ const years = [1, 2, 3, 4, 5, 6];
 		opacity: 1;
 	}
 	.now .bar {
-		background: var(--accent);
-		border-color: var(--accent);
+		background: var(--now);
+		border-color: var(--now);
 		opacity: 1;
 	}
 	.yl {
@@ -84,34 +120,52 @@ const years = [1, 2, 3, 4, 5, 6];
 		white-space: nowrap;
 	}
 	.now .yl {
-		color: var(--accent);
+		color: var(--now);
 		font-weight: 700;
-	}
-	.here {
-		position: absolute;
-		top: -1.85rem;
-		white-space: nowrap;
-		font-size: 0.75rem;
-		font-weight: 700;
-		color: #fff;
-		background: var(--accent);
-		border-radius: 999px;
-		padding: 0.05rem 0.55rem;
-	}
-	.here::after {
-		content: '';
-		position: absolute;
-		left: 50%;
-		bottom: -5px;
-		margin-left: -5px;
-		border: 5px solid transparent;
-		border-bottom: 0;
-		border-top-color: var(--accent);
 	}
 	figcaption {
 		margin-top: 0.6rem;
-		font-size: 0.85rem;
-		text-align: center;
-		color: var(--text);
+		font-size: 0.8rem;
+		color: var(--muted);
+	}
+
+	/* ヘッダー用 */
+	.mini {
+		--now: var(--deadline);
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font-size: 0.8rem;
+		color: var(--muted);
+		white-space: nowrap;
+	}
+	.mini.calm {
+		--now: var(--accent);
+	}
+	.cells {
+		display: inline-grid;
+		grid-template-columns: repeat(6, 8px);
+		gap: 3px;
+	}
+	.cells i {
+		display: block;
+		height: 14px;
+		border: 1.5px solid var(--muted);
+		opacity: 0.55;
+		border-radius: 1px;
+	}
+	.cells i.done {
+		background: var(--text);
+		border-color: var(--text);
+		opacity: 1;
+	}
+	.cells i.now {
+		background: var(--now);
+		border-color: var(--now);
+		opacity: 1;
+	}
+	.mini-label b {
+		color: var(--now);
+		font-size: 0.95rem;
 	}
 </style>

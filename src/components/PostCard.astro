@@ -3,7 +3,6 @@
 import type { CollectionEntry } from 'astro:content';
 import { partLabel } from '../data/categories';
 import { ogPath, readingMinutes } from '../lib/posts';
-import FormattedDate from './FormattedDate.astro';
 
 interface Props {
 	post: CollectionEntry<'posts'>;
@@ -20,8 +19,7 @@ const { post, compact = false } = Astro.props;
 		<p class="part">{partLabel(post.data.category)}</p>
 		<h3><a href={`/posts/${post.id}/`}>{post.data.title}</a></h3>
 		<p class="meta">
-			{post.data.category !== 'monthly' && <FormattedDate date={post.data.pubDate} />}
-			<span>・{readingMinutes(post)}分で読めます</span>
+			<span>{readingMinutes(post)}分で読めます</span>
 		</p>
 	</div>
 </article>
@@ -33,7 +31,7 @@ const { post, compact = false } = Astro.props;
 		border: 1px solid var(--line);
 		border-radius: 10px;
 		overflow: hidden;
-		background: var(--bg);
+		background: var(--card);
 		transition:
 			box-shadow 0.15s,
 			transform 0.15s;
