@@ -6,13 +6,7 @@ import type { CategoryId } from './categories';
 export type PlannedPost = { title: string; slug?: string };
 
 export const SERIES: Partial<Record<CategoryId, PlannedPost[]>> = {
-	prequel: [
-		{ title: '適応障害で休職した' },
-		{ title: '復職ではなく退職を選んだ' },
-		{ title: '退職後の健康保険、任意継続か国保か' },
-		{ title: 'ハローワークで知ったこと' },
-		{ title: '再就職ではなくマイクロ法人にした' },
-	],
+	// 前日譚は全5本公開済み（2026-10）
 	concept: [
 		{ title: 'なぜ法人を考えたか（国保・年金の負担）' },
 		{ title: '個人・法人・その他の3パターン比較' },
