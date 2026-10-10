@@ -130,6 +130,7 @@ ${gridSvg()}
 ${motifSvg(theme.motif, fg)}
 <text x="38" y="80" font-family="${MINCHO}" font-size="25" font-weight="700" fill="${fg}">6年でたたむ</text>
 <text x="38" y="114" font-family="${MINCHO}" font-size="25" font-weight="700" fill="${fg}">ひとり法人</text>
+<rect x="194" y="44" width="58" height="54" rx="8" fill="#0f5c4d"/><svg x="198" y="50" width="50" height="42" viewBox="105 72 190 146"><polygon points="105,72 295,72 295,218 105,218" fill="#fffdf8"/><polygon points="105,72 295,72 295,96 105,96" fill="#e3d6bd"/><circle cx="158" cy="143" r="16" fill="#1b1b1b"/><circle cx="242" cy="143" r="16" fill="#1b1b1b"/><circle cx="126" cy="178" r="13" fill="#ff6b4a" opacity=".5"/><circle cx="274" cy="178" r="13" fill="#ff6b4a" opacity=".5"/><path d="M184 176 Q200 192 216 176" fill="none" stroke="#1b1b1b" stroke-width="6" stroke-linecap="round"/></svg>
 <text x="38" y="200" font-family="${FONT}" font-size="22" fill="${fg}" fill-opacity=".85">6年のうち</text>
 ${cells}
 <text x="38" y="370" font-family="${FONT}" font-size="54" font-weight="700" fill="${fg}">${calm ? '設立前' : `${opts.year}<tspan font-size="30">年目</tspan>`}</text>

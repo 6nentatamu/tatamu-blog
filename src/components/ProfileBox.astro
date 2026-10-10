@@ -6,7 +6,7 @@ const { label = 'この記事を書いた人' } = Astro.props;
 
 <section class="profile" aria-label={label}>
 	<div class="head">
-		<img src="/favicon.svg" alt="" width="56" height="56" />
+		<img src="/profile.svg" alt="" width="72" height="72" />
 		<div>
 			<p class="label">{label}</p>
 			<p class="name">{AUTHOR}</p>
@@ -44,7 +44,7 @@ const { label = 'この記事を書いた人' } = Astro.props;
 		gap: 0.8rem;
 	}
 	.head img {
-		border-radius: 12px;
+		border-radius: 50%;
 		border: 1px solid var(--line);
 		flex: none;
 	}
