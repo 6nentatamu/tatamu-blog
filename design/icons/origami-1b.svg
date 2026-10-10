@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+<rect width="400" height="400" fill="#0f5c4d"/>
+<polygon points="140,222 78,244 78,282 140,268" fill="#fffdf8"/>
+<polygon points="260,222 322,244 322,282 260,268" fill="#cbbb9c"/>
+<polygon points="140,214 260,214 260,268 140,268" fill="#e3d6bd"/>
+<polygon points="140,268 200,268 200,326 124,326" fill="#fffdf8"/>
+<polygon points="200,268 260,268 276,326 200,326" fill="#c2b08e"/>
+<polygon points="105,72 295,72 295,218 105,218" fill="#fffdf8"/>
+<polygon points="105,72 295,72 295,96 105,96" fill="#e3d6bd"/>
+<polygon points="105,96 140,96 105,130" fill="#cbbb9c"/>
+<polygon points="295,96 262,96 295,128" fill="#eadfcd"/>
+<circle cx="158" cy="143" r="13" fill="#1b1b1b"/><circle cx="242" cy="143" r="13" fill="#1b1b1b"/>
+<circle cx="162" cy="138" r="4" fill="#fff"/><circle cx="246" cy="138" r="4" fill="#fff"/>
+<circle cx="126" cy="176" r="13" fill="#ff6b4a" opacity=".45"/><circle cx="274" cy="176" r="13" fill="#ff6b4a" opacity=".45"/>
+<path d="M186 176 Q200 190 214 176" fill="none" stroke="#1b1b1b" stroke-width="4.5" stroke-linecap="round"/>
+<polygon points="184,220 216,220 200,236" fill="#ff6b4a"/>
+<polygon points="191,236 209,236 220,272 200,284 180,272" fill="#ff6b4a"/>
+<polygon points="200,236 209,236 220,272 200,284" fill="#e5522f"/>
+</svg>
