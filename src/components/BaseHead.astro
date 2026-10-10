@@ -25,6 +25,7 @@ const fullTitle = title === SITE_TITLE ? title : `${title}｜${SITE_TITLE}`;
 <link rel="sitemap" href="/sitemap-index.xml" />
 <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href={new URL('rss.xml', Astro.site)} />
 {NOINDEX && <meta name="robots" content="noindex, nofollow" />}
+<meta name="google-site-verification" content="7A1AQfN-IMGNL9L7W1KTvIcdi1AHgB2wBfpaoTDhPKE" />
 <link rel="canonical" href={canonicalURL} />
 <title>{fullTitle}</title>
 <meta name="description" content={description} />
