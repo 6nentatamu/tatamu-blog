@@ -38,16 +38,25 @@ const items = Astro.props.headings.filter((h) => h.depth === 2 || h.depth === 3)
 	}
 	ol {
 		margin: 0;
-		padding-left: 1.3rem;
+		padding-left: 0;
+		list-style: none;
+		counter-reset: toc;
 		font-size: 0.92rem;
 		line-height: 1.7;
 	}
 	li + li {
 		margin-top: 0.2rem;
 	}
+	.d2 {
+		counter-increment: toc;
+	}
+	.d2::before {
+		content: counter(toc) '. ';
+		color: var(--accent);
+		font-weight: 700;
+	}
 	.d3 {
-		list-style: none;
-		margin-left: 0.4rem;
+		margin-left: 1.4rem;
 		font-size: 0.86rem;
 	}
 	.d3::before {
