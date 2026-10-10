@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+<rect width="400" height="400" fill="#ffd166"/>
+<polygon points="98,96 175,104 66,200" fill="#eadfcd"/>
+<polygon points="302,96 225,104 334,200" fill="#d8cab2"/>
+<polygon points="200,285 130,300 148,342 200,322" fill="#fffdf8"/>
+<polygon points="200,285 270,300 252,342 200,322" fill="#eadfcd"/>
+<polygon points="105,100 200,100 200,272" fill="#fffdf8"/>
+<polygon points="200,100 295,100 200,272" fill="#f3ead8"/>
+<polygon points="150,200 250,200 200,272" fill="#eadfcd"/>
+<polygon points="105,100 200,100 150,130" fill="#eadfcd" opacity=".7"/>
+<polygon points="186,252 214,252 200,274" fill="#1b1b1b"/>
+<circle cx="168" cy="160" r="10.5" fill="#1b1b1b"/><circle cx="232" cy="160" r="10.5" fill="#1b1b1b"/>
+<circle cx="171" cy="156" r="3.4" fill="#fff"/><circle cx="235" cy="156" r="3.4" fill="#fff"/>
+<circle cx="150" cy="186" r="9" fill="#ff6b4a" opacity=".45"/><circle cx="250" cy="186" r="9" fill="#ff6b4a" opacity=".45"/>
+<polygon points="188,288 212,288 200,300" fill="#ff6b4a"/>
+<polygon points="193,300 207,300 216,334 200,348 184,334" fill="#ff6b4a"/>
+<polygon points="200,300 207,300 216,334 200,348" fill="#e5522f"/>
+</svg>
