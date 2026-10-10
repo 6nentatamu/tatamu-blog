@@ -11,7 +11,7 @@ export const AUTHOR = 'ひとり社長M';
 export const X_URL = 'https://x.com/hitori_shacho_m';
 
 // 公開するまで true。検索エンジンに載せない（noindex）
-export const NOINDEX = true;
+export const NOINDEX = false;
 
 // お問い合わせ用 Google フォームの共有URL（例: 'https://forms.gle/XXXX'）。空のあいだは「準備中」と表示
 export const CONTACT_FORM_URL = 'https://forms.gle/htr6zHkPnBw14to88';
