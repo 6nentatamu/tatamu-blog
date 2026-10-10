@@ -8,6 +8,7 @@ import { CATEGORIES } from '../data/categories';
 import Base from '../layouts/Base.astro';
 import { getPosts } from '../lib/posts';
 
+// トップ＝方向性C（手帳・記録ノート）。方眼の上に、集計表・年表・付箋を置く
 const posts = await getPosts();
 // 新着は法人の本編・月次だけ。前日譚は入口側に置き、新着を埋めない
 const latest = posts.filter((p) => p.data.category !== 'prequel').slice(0, 6);
@@ -44,38 +45,44 @@ const entries = [
 ---
 
 <Base title={SITE_TITLE} description={SITE_DESCRIPTION}>
-	<section class="hero">
-		<div class="hero-inner">
-			<div class="hero-text">
-				<p class="eyebrow">ひとり法人の設立から解散までの記録</p>
-				<h1>解散日まで決めて、<br />ひとり法人を作りました。</h1>
-				<p class="lead">
-					適応障害で会社員を辞めたあと、6年でたたむと決めて法人を作りました。設立費用・役員報酬・社会保険・解散の税務を、実際の数字で書いています。
-				</p>
-				<ul class="facts">
+	<section class="in hero">
+		<div class="page">
+			<svg class="stamp" viewBox="0 0 120 120" aria-hidden="true">
+				<circle cx="60" cy="60" r="52" fill="none" stroke-width="5"></circle>
+				<circle cx="60" cy="60" r="43" fill="none" stroke-width="1.5"></circle>
+				<text x="60" y="72" text-anchor="middle" font-size="34" font-weight="700" font-family="serif">設立</text>
+			</svg>
+			<p class="eyebrow">ひとり法人の設立から解散までの記録</p>
+			<h1>解散日まで決めて、<br />ひとり法人を作りました。</h1>
+			<p class="lead">
+				適応障害で会社員を辞めたあと、6年でたたむと決めて法人を作りました。設立費用・役員報酬・社会保険・解散の税務を、実際の数字で書いています。
+			</p>
+			<table class="ledger">
+				<caption>集計（記事の実数）</caption>
+				<tbody>
 					{
 						facts.map((f) => (
-							<li>
-								<a href={f.href}>
-									<span class="fv">{f.value}</span>
-									<span class="fl">{f.label}</span>
-								</a>
-							</li>
+							<tr>
+								<th scope="row">
+									<a href={f.href}>{f.label}</a>
+								</th>
+								<td>{f.value}</td>
+							</tr>
 						))
 					}
-				</ul>
-				<div class="cta">
-					<a class="start" href="/hajimeni/">はじめに読む →</a>
-					<a class="sub" href="/series/">連載目次</a>
-				</div>
+				</tbody>
+			</table>
+			<div class="cta">
+				<a class="start" href="/hajimeni/">はじめに読む →</a>
+				<a class="sub" href="/series/">連載目次</a>
 			</div>
-			<div class="hero-fig">
-				<SixYearScale current={CURRENT_YEAR} />
-			</div>
+		</div>
+		<div class="hero-fig">
+			<SixYearScale current={CURRENT_YEAR} />
 		</div>
 	</section>
 
-	<main class="container wide">
+	<main class="in body">
 		<section class="entry-sec" aria-label="入口">
 			<EntryCards items={entries} />
 		</section>
@@ -90,7 +97,7 @@ const entries = [
 			<ol class="parts">
 				{
 					parts.map((c, i) => (
-						<li>
+						<li style={`--r:${(i % 2 ? 1 : -1) * 0.8}deg`}>
 							<a href={`/series/#part-${i}`}>
 								<span class="no">第{i}部</span>
 								<span class="name">{c.name}</span>
@@ -110,56 +117,117 @@ const entries = [
 </Base>
 
 <style>
-	.hero {
-		background: var(--page);
-		border-bottom: 1px solid var(--line);
-	}
-	.hero-inner {
+	.in {
 		max-width: var(--wide);
 		margin: 0 auto;
-		padding: 1.75rem 1rem 2rem;
+		padding: 0 1rem;
+	}
+	.hero {
 		display: grid;
-		gap: 1.5rem;
-		align-items: center;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 2.2rem;
+		padding-top: 2rem;
+		padding-bottom: 2.5rem;
 	}
 	@media (min-width: 860px) {
-		.hero-inner {
-			grid-template-columns: 1.1fr 1fr;
+		.hero {
+			grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
 			gap: 3rem;
-			padding: 3rem 1rem 3.25rem;
+			align-items: start;
+			padding-top: 3rem;
+			padding-bottom: 3.25rem;
 		}
 	}
+	.page {
+		position: relative;
+		min-width: 0;
+	}
+	/* 丸いスタンプ「設立」＝深緑 */
+	.stamp {
+		position: absolute;
+		width: 84px;
+		right: 0;
+		top: -0.5rem;
+		transform: rotate(12deg);
+		opacity: 0.85;
+	}
+	.stamp circle {
+		stroke: var(--accent);
+	}
+	.stamp text {
+		fill: var(--accent);
+	}
 	.eyebrow {
-		margin: 0 0 0.5rem;
+		margin: 0 0 0.6rem;
+		padding-right: 90px;
 		font-size: 0.85rem;
 		font-weight: 700;
 		color: var(--accent);
 	}
 	h1 {
-		font-size: clamp(1.45rem, 5.4vw, 2.1rem);
-		line-height: 1.45;
-		margin: 0 0 0.75rem;
+		font-size: clamp(1.6rem, 6.4vw, 2.5rem);
+		line-height: 1.4;
+		margin: 0 0 1rem;
 	}
 	.lead {
-		margin: 0 0 1.25rem;
-		font-size: 1rem;
+		margin: 0 0 1.4rem;
+	}
+	/* 罫線の集計表。数字は折り返さない */
+	.ledger {
+		width: 100%;
+		border-collapse: collapse;
+		margin-bottom: 1.4rem;
+		background: var(--card);
+		box-shadow: 0 1px 0 var(--line);
+	}
+	.ledger caption {
+		text-align: left;
+		font-size: 0.8rem;
+		color: var(--muted);
+		padding-bottom: 0.3rem;
+	}
+	.ledger th,
+	.ledger td {
+		border-bottom: 1px solid var(--rule);
+		padding: 0.55rem 0.6rem;
+	}
+	.ledger tr:first-child th,
+	.ledger tr:first-child td {
+		border-top: 2px solid var(--accent);
+	}
+	.ledger th {
+		text-align: left;
+		font-weight: 400;
+		font-size: 0.9rem;
+		line-height: 1.5;
+		border-right: 1px solid var(--deadline);
+	}
+	.ledger th a {
 		color: var(--text);
+	}
+	.ledger td {
+		width: 1%;
+		text-align: right;
+		font-weight: 700;
+		font-size: 1.15rem;
+		color: var(--accent-strong);
+		white-space: nowrap;
 	}
 	.cta {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.75rem;
+		gap: 0.75rem 1rem;
 		align-items: center;
 	}
 	.start {
 		display: inline-block;
 		padding: 0.7rem 1.5rem;
-		border-radius: 999px;
+		border-radius: 4px;
 		background: var(--accent);
-		color: #fff;
+		color: var(--on-accent);
 		font-weight: 700;
 		text-decoration: none;
-		
+		box-shadow: 3px 3px 0 var(--deadline);
 	}
 	.start:hover {
 		background: var(--accent-strong);
@@ -167,82 +235,66 @@ const entries = [
 	.sub {
 		font-weight: 700;
 	}
-	.facts {
-		list-style: none;
-		margin: 0 0 1.25rem;
-		padding: 0;
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.6rem;
+	.hero-fig {
+		min-width: 0;
+		padding-top: 0.5rem;
 	}
-	.facts a {
-		display: flex;
-		flex-direction: column;
-		padding: 0.45rem 0.9rem;
-		background: var(--card);
-		border: 1px solid var(--line);
-		border-radius: 8px;
-		text-decoration: none;
-		color: var(--text);
-	}
-	.fv {
-		font-size: 1.35rem;
-		font-weight: 700;
-		color: var(--accent-strong);
-		line-height: 1.35;
-	}
-	.fl {
-		font-size: 0.78rem;
-		color: var(--muted);
-	}
-	.entry-sec {
-		margin-top: 1.75rem;
-	}
-	.wide {
-		max-width: var(--wide);
-	}
-	main section {
+	.body section {
 		margin-top: 2.5rem;
 	}
+	.body .entry-sec {
+		margin-top: 0;
+	}
+	/* セクション見出しは黄のマーカー */
 	.sec {
+		display: inline-block;
 		font-size: 1.25rem;
 		margin: 0 0 1rem;
-		padding-left: 0.7rem;
-		border-left: 6px solid var(--accent);
+		padding: 0 0.3rem;
+		background: linear-gradient(transparent 58%, var(--marker) 58%);
 	}
+	/* 連載は付箋（色は固定。ダークでも付箋は明るいまま、文字は墨） */
 	.parts {
 		list-style: none;
 		padding: 0;
 		margin: 0 0 1rem;
 		display: grid;
-		gap: 0.75rem;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 1rem;
 	}
 	@media (min-width: 720px) {
 		.parts {
-			grid-template-columns: 1fr 1fr 1fr;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
 		}
 	}
 	.parts li {
-		border: 1px solid var(--line);
-		border-top: 3px solid var(--accent);
-		border-radius: 8px;
+		background: #ffd166;
+		color: #1b1b1b;
 		padding: 0.9rem 1rem;
-		background: var(--card);
+		box-shadow: 0 3px 6px rgb(0 0 0 / 0.14);
+		transform: rotate(var(--r));
+	}
+	.parts li:nth-child(3n + 2) {
+		background: #cfe6dc;
+	}
+	.parts li:nth-child(3n) {
+		background: #ffc4b5;
 	}
 	.parts a {
 		text-decoration: none;
-		color: var(--text);
+		color: #1b1b1b;
 		font-weight: 700;
 	}
 	.parts .no {
-		color: var(--accent);
+		color: #0a4438;
 		margin-right: 0.5rem;
 		font-size: 0.85rem;
 	}
 	.parts p {
 		margin: 0.3rem 0 0;
 		font-size: 0.875rem;
-		color: var(--muted);
+		line-height: 1.65;
+		color: #3a3732;
 	}
 	.about {
 		max-width: 560px;

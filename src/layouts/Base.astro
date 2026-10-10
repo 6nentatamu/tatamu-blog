@@ -8,7 +8,7 @@ interface Props {
 	description: string;
 	// 共有時の画像（og:image）。省略時はサイト共通の画像
 	image?: string;
-	// 前日譚のページ：朱を出さない
+	// 前日譚のページ：「今年」の強調（珊瑚）を出さない
 	calm?: boolean;
 }
 const { title, description, image, calm = false } = Astro.props;

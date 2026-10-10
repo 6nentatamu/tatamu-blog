@@ -1,34 +1,48 @@
 // 記事ごとのアイキャッチ（1200x630）。SVG を組み立てて sharp で PNG にする。
-// 左帯に6年ゲージと「○年目」。部ごとに帯の色とモチーフを変える。前日譚は朱を使わない。
-// keyNumber があれば右下に大きく出す。
+// 配色＝案2（深緑×珊瑚）、方向性＝C（手帳・記録ノート）。右は方眼の紙、左は部ごとの色の帯。
+// 左帯に6年の目盛りと「○年目」。部ごとに帯の色とモチーフを変える。前日譚は「今年」の珊瑚を使わない。
+// keyNumber があれば右下に集計表の1行として大きく出す。
 import sharp from 'sharp';
 
 const FONT = "'Yu Gothic UI','Yu Gothic','Meiryo','Hiragino Sans','Noto Sans JP',sans-serif";
 // Zen Old Mincho はビルド環境（Windows の sharp/librsvg）に無いので、システムの游明朝を使う
 const MINCHO = "'Zen Old Mincho','Yu Mincho','YuMincho','Hiragino Mincho ProN','Noto Serif JP',serif";
-const BG = '#faf8f4';
-const INK = '#26231f';
-const DEADLINE = '#c8553d';
+const PAPER = '#fff6e9';
+const INK = '#1b1b1b';
+const GREEN = '#0f5c4d';
+const CORAL = '#ff6b4a';
+const YELLOW = '#ffd166';
 
-// 部ごとの帯色とモチーフ
-const THEME: Record<string, { color: string; motif: 'dots' | 'lines' | 'grid' | 'steps' | 'rings' | 'ticks' }> = {
-	prequel: { color: '#55657f', motif: 'dots' },
-	concept: { color: '#1f6f6a', motif: 'lines' },
-	design: { color: '#2d5873', motif: 'grid' },
-	setup: { color: '#7a5a2a', motif: 'steps' },
-	operation: { color: '#4b6a3b', motif: 'rings' },
-	monthly: { color: INK, motif: 'ticks' },
+// 部ごとの帯色とモチーフ。色は案2の色相（深緑を軸に、青緑・墨緑・黄・墨）で分ける。
+// fg＝帯の上の文字色、num＝紙の上に出す数字の色
+type Theme = { color: string; fg: string; num: string; motif: 'dots' | 'lines' | 'grid' | 'steps' | 'rings' | 'ticks' };
+const THEME: Record<string, Theme> = {
+	prequel: { color: '#4f6f67', fg: '#fff', num: '#3d5952', motif: 'dots' },
+	concept: { color: GREEN, fg: '#fff', num: GREEN, motif: 'lines' },
+	design: { color: '#17697a', fg: '#fff', num: '#125563', motif: 'grid' },
+	setup: { color: '#0a3d33', fg: '#fff', num: '#0a3d33', motif: 'steps' },
+	operation: { color: YELLOW, fg: INK, num: '#7a5600', motif: 'rings' },
+	monthly: { color: INK, fg: '#fff', num: GREEN, motif: 'ticks' },
 };
 
-function motifSvg(m: string) {
+function motifSvg(m: string, fg: string) {
 	const out: string[] = [];
-	const o = 'stroke="#fff" stroke-opacity=".14" fill="none"';
-	if (m === 'dots') for (let x = 0; x < 6; x++) for (let y = 0; y < 4; y++) out.push(`<circle cx="${36 + x * 38}" cy="${440 + y * 38}" r="4" fill="#fff" fill-opacity=".16"/>`);
+	const o = `stroke="${fg}" stroke-opacity=".14" fill="none"`;
+	if (m === 'dots') for (let x = 0; x < 6; x++) for (let y = 0; y < 4; y++) out.push(`<circle cx="${36 + x * 38}" cy="${440 + y * 38}" r="4" fill="${fg}" fill-opacity=".16"/>`);
 	if (m === 'lines') for (let i = 0; i < 9; i++) out.push(`<line x1="${-40 + i * 40}" y1="630" x2="${120 + i * 40}" y2="420" ${o} stroke-width="2"/>`);
 	if (m === 'grid') for (let i = 0; i < 7; i++) out.push(`<line x1="${20 + i * 38}" y1="420" x2="${20 + i * 38}" y2="610" ${o} stroke-width="2"/><line x1="0" y1="${420 + i * 32}" x2="260" y2="${420 + i * 32}" ${o} stroke-width="2"/>`);
 	if (m === 'steps') out.push(`<path d="M0 610 h50 v-40 h50 v-40 h50 v-40 h50 v-40 h60" ${o} stroke-width="4"/>`);
 	if (m === 'rings') for (let i = 1; i < 6; i++) out.push(`<circle cx="130" cy="560" r="${i * 26}" ${o} stroke-width="2"/>`);
 	if (m === 'ticks') for (let i = 0; i < 12; i++) out.push(`<line x1="${22 + i * 19}" y1="${i % 3 === 0 ? 560 : 580}" x2="${22 + i * 19}" y2="610" ${o} stroke-width="3"/>`);
+	return out.join('');
+}
+
+// 紙の方眼（右側の地）
+function gridSvg() {
+	const out: string[] = [];
+	const o = `stroke="${GREEN}" stroke-opacity=".08" stroke-width="1"`;
+	for (let x = 280; x < 1200; x += 30) out.push(`<line x1="${x}" y1="0" x2="${x}" y2="630" ${o}/>`);
+	for (let y = 15; y < 630; y += 30) out.push(`<line x1="260" y1="${y}" x2="1200" y2="${y}" ${o}/>`);
 	return out.join('');
 }
 
@@ -79,7 +93,7 @@ function titleLines(title: string, max = 17): string[] {
 export function ogSvg(opts: OgOpts) {
 	const theme = THEME[opts.categoryId] ?? THEME.concept;
 	const calm = opts.categoryId === 'prequel';
-	const nowColor = calm ? '#ffffff' : DEADLINE;
+	const fg = theme.fg;
 	const kn = opts.keyNumber;
 	const maxLines = kn ? 3 : 4;
 	const lines = titleLines(opts.title, 15).slice(0, maxLines);
@@ -88,31 +102,39 @@ export function ogSvg(opts: OgOpts) {
 	const titleTop = 205 + size;
 	const label = opts.partNo !== undefined ? `第${opts.partNo}部　${opts.part}` : opts.part;
 	const labelW = [...label].length * 28 + 44;
-	// 左帯のゲージ：6コマ（経過＝白塗り、今年＝朱〔前日譚は白〕、残り＝線）
+	// 左帯の目盛り：6コマ（経過＝帯の文字色で塗り、今年＝珊瑚〔前日譚は使わない〕、残り＝線）
+	const outline = (x: number) =>
+		`<rect x="${x + 1.5}" y="231.5" width="21" height="67" fill="none" stroke="${fg}" stroke-opacity=".6" stroke-width="3"/>`;
 	const cells = Array.from({ length: 6 }, (_, i) => {
 		const y = i + 1;
 		const x = 38 + i * 32;
-		if (calm) return `<rect x="${x + 1.5}" y="231.5" width="21" height="67" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="3"/>`;
-		if (y < opts.year) return `<rect x="${x}" y="230" width="24" height="70" fill="#fff"/>`;
-		if (y === opts.year)
-			return `<rect x="${x}" y="230" width="24" height="70" fill="${nowColor}"${calm ? '' : ' stroke="#fff" stroke-width="2"'}/>`;
-		return `<rect x="${x + 1.5}" y="231.5" width="21" height="67" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="3"/>`;
+		if (calm) return outline(x);
+		if (y < opts.year) return `<rect x="${x}" y="230" width="24" height="70" fill="${fg}"/>`;
+		if (y === opts.year) return `<rect x="${x}" y="230" width="24" height="70" fill="${CORAL}" stroke="${fg}" stroke-width="2"/>`;
+		return outline(x);
 	}).join('');
+	// 数字は集計表の1行（上に深緑の二重線、下に罫線）
 	const knSvg = kn
-		? `<text x="310" y="505" font-family="${FONT}" font-size="26" fill="#6b655c">${esc(kn.label)}</text>
-<text x="310" y="575" font-family="${FONT}" font-size="${[...kn.value].length > 12 ? 52 : 66}" font-weight="700" fill="${theme.color}">${esc(kn.value)}</text>`
+		? `<rect x="310" y="462" width="830" height="126" fill="#fffdf8"/>
+<line x1="310" y1="462" x2="1140" y2="462" stroke="${GREEN}" stroke-width="4"/>
+<line x1="310" y1="588" x2="1140" y2="588" stroke="${GREEN}" stroke-opacity=".35" stroke-width="2"/>
+<line x1="322" y1="462" x2="322" y2="588" stroke="${CORAL}" stroke-width="2"/>
+<text x="340" y="503" font-family="${FONT}" font-size="26" fill="#5f5a52">${esc(kn.label)}</text>
+<text x="340" y="568" font-family="${FONT}" font-size="${[...kn.value].length > 12 ? 50 : 62}" font-weight="700" fill="${theme.num}">${esc(kn.value)}</text>`
 		: '';
 	return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-<rect width="1200" height="630" fill="${BG}"/>
+<rect width="1200" height="630" fill="${PAPER}"/>
+${gridSvg()}
 <rect width="260" height="630" fill="${theme.color}"/>
-${motifSvg(theme.motif)}
-<text x="38" y="80" font-family="${MINCHO}" font-size="25" font-weight="700" fill="#fff">6年でたたむ</text>
-<text x="38" y="114" font-family="${MINCHO}" font-size="25" font-weight="700" fill="#fff">ひとり法人</text>
-<text x="38" y="200" font-family="${FONT}" font-size="22" fill="#fff" fill-opacity=".85">6年のうち</text>
+<rect x="260" width="8" height="630" fill="${CORAL}"/>
+${motifSvg(theme.motif, fg)}
+<text x="38" y="80" font-family="${MINCHO}" font-size="25" font-weight="700" fill="${fg}">6年でたたむ</text>
+<text x="38" y="114" font-family="${MINCHO}" font-size="25" font-weight="700" fill="${fg}">ひとり法人</text>
+<text x="38" y="200" font-family="${FONT}" font-size="22" fill="${fg}" fill-opacity=".85">6年のうち</text>
 ${cells}
-<text x="38" y="370" font-family="${FONT}" font-size="54" font-weight="700" fill="#fff">${calm ? '設立前' : `${opts.year}<tspan font-size="30">年目</tspan>`}</text>
-<rect x="310" y="70" width="${labelW}" height="50" rx="25" fill="${theme.color}"/>
-<text x="${310 + labelW / 2}" y="105" text-anchor="middle" font-family="${FONT}" font-size="26" font-weight="700" fill="#fff">${esc(label)}</text>
+<text x="38" y="370" font-family="${FONT}" font-size="54" font-weight="700" fill="${fg}">${calm ? '設立前' : `${opts.year}<tspan font-size="30">年目</tspan>`}</text>
+<rect x="310" y="70" width="${labelW}" height="50" rx="4" fill="${theme.color}"/>
+<text x="${310 + labelW / 2}" y="105" text-anchor="middle" font-family="${FONT}" font-size="26" font-weight="700" fill="${fg}">${esc(label)}</text>
 ${lines
 	.map(
 		(l, i) =>

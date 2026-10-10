@@ -56,7 +56,8 @@ const hasAffiliate = SERVICES.some((s) => s.affiliateUrl || s.bannerHtml);
 	}
 	.service {
 		border: 1px solid var(--line);
-		border-radius: 8px;
+		border-radius: 3px;
+		background: var(--bg);
 		padding: 0.9rem 1rem;
 		margin-bottom: 0.75rem;
 	}
@@ -69,7 +70,8 @@ const hasAffiliate = SERVICES.some((s) => s.affiliateUrl || s.bannerHtml);
 	}
 	.links {
 		display: flex;
-		gap: 1.25rem;
+		flex-wrap: wrap;
+		gap: 0.25rem 1.25rem;
 		font-size: 0.9rem;
 	}
 	.banner :global(img) {

@@ -1,7 +1,7 @@
 ---
-// 6年ゲージ（年単位）。経過＝塗り、今年＝朱、残り＝線。日・月・年月は出さない。
-// calm: 前日譚のページ用。朱を使わず青緑で今年を示す。
-// size: large＝トップのヒーロー、mini＝ヘッダー
+// 6年ゲージ（年単位）。手帳の年表として出す。日・月・年月は出さない（品質基準 D1）。
+// calm: 前日譚のページ用。「今年」の強調に珊瑚を使わず深緑で示す。
+// size: large＝トップの年表（罫線ノート＋付箋）、mini＝ヘッダーの小さいマス
 import { CURRENT_YEAR, TOTAL_YEARS } from '../consts';
 
 interface Props {
@@ -11,161 +11,164 @@ interface Props {
 }
 const { current = CURRENT_YEAR, calm = false, size = 'large' } = Astro.props;
 const years = Array.from({ length: TOTAL_YEARS }, (_, i) => i + 1);
-const left = TOTAL_YEARS - current;
+const rowText = (y: number) => (y === 1 ? '設立・届出・口座' : y === TOTAL_YEARS ? '解散・清算' : '運営');
 ---
 
 {
 	size === 'mini' ? (
-		<span class:list={['mini', { calm }]} aria-label={`${TOTAL_YEARS}年のうち${current}年目`}>
-			<span class="cells" aria-hidden="true">
+		<span class="mini" aria-label={`${TOTAL_YEARS}年のうち${current}年目`}>
+			<span class:list={['yr-cells', { calm }]} aria-hidden="true">
 				{years.map((y) => (
-					<i class:list={[{ done: y < current, now: y === current }]} />
+					<i class:list={[{ done: y < current, now: y === current }]}>{y}</i>
 				))}
 			</span>
-			<span class="mini-label">
+			<span class:list={['mini-label', { calm }]}>
 				{TOTAL_YEARS}年のうち<b>{current}</b>年目
 			</span>
 		</span>
 	) : (
-		<figure class:list={['scale', { calm }]} aria-label={`${TOTAL_YEARS}年のゲージ。今は${current}年目`}>
-			<p class="scale-head">
-				<span>
-					{TOTAL_YEARS}年のうち<strong class="big">{current}</strong>年目
-				</span>
-				<span class="left">
-					残り<strong>{left}</strong>年
-				</span>
-			</p>
-			<ol class="bars">
+		<figure class:list={['note', { calm }]} aria-label={`${TOTAL_YEARS}年の年表。今は${current}年目`}>
+			<span class="tape" aria-hidden="true" />
+			<figcaption class="nh">
+				年表　<b>{TOTAL_YEARS}年のうち{current}年目</b>
+			</figcaption>
+			<ol class="tl">
 				{years.map((y) => (
 					<li class:list={[{ done: y < current, now: y === current }]}>
-						<span class="bar" />
-						<span class="yl">{y}年目</span>
+						<span class="y">{y}年目</span>
+						<span class="row">{rowText(y)}</span>
+						{y === current && <span class="here">いまここ</span>}
 					</li>
 				))}
 			</ol>
-			<figcaption>設立から解散まで{TOTAL_YEARS}年。塗りが過ぎた年、色が今年、線がこれからの年です</figcaption>
+			<svg class="stamp" viewBox="0 0 140 70" aria-hidden="true">
+				<rect x="4" y="4" width="132" height="62" rx="6" fill="none" stroke-width="4" />
+				<text x="70" y="45" text-anchor="middle" font-size="24" font-weight="700" font-family="serif">解散予定</text>
+			</svg>
 		</figure>
 	)
 }
 
 <style>
-	.scale {
+	/* トップの年表：罫線ノート1枚 */
+	.note {
 		--now: var(--deadline);
+		--on-now: var(--on-deadline);
+		--now-ink: var(--deadline-ink);
+		position: relative;
 		margin: 0;
-		padding: 1.1rem 1.2rem 0.9rem;
-		background: var(--card);
-		border: 1px solid var(--line);
-		border-radius: 12px;
+		min-width: 0;
+		padding: 1.6rem 1rem 1.2rem 1.6rem;
+		color: var(--text);
+		background-color: var(--card);
+		background-image: repeating-linear-gradient(var(--card) 0 31px, var(--rule) 31px 32px);
+		border-left: 3px double var(--deadline);
+		box-shadow: 0 2px 10px rgb(0 0 0 / 0.1);
 	}
-	.calm {
+	.note.calm {
 		--now: var(--accent);
+		--on-now: var(--on-accent);
+		--now-ink: var(--accent);
 	}
-	.scale-head {
-		display: flex;
-		justify-content: space-between;
-		align-items: baseline;
-		margin: 0 0 0.8rem;
-		font-size: 0.95rem;
+	@media (min-width: 860px) {
+		.note {
+			padding-left: 2.4rem;
+			transform: rotate(0.6deg);
+		}
 	}
-	.big {
-		font-size: 2.4rem;
-		line-height: 1;
-		margin: 0 0.15rem;
-		color: var(--now);
+	.tape {
+		position: absolute;
+		top: -12px;
+		left: 40%;
+		width: 90px;
+		height: 24px;
+		background: var(--memo);
+		opacity: 0.75;
+		transform: rotate(-4deg);
 	}
-	.left {
+	.nh {
+		margin: 0;
+		line-height: 32px;
+		font-size: 0.9rem;
 		color: var(--muted);
 	}
-	.left strong {
-		font-size: 1.3rem;
+	.nh b {
 		color: var(--text);
-		margin: 0 0.1rem;
 	}
-	.bars {
+	.tl {
 		list-style: none;
 		margin: 0;
 		padding: 0;
-		display: grid;
-		grid-template-columns: repeat(6, minmax(0, 1fr));
-		gap: 0.45rem;
 	}
-	li {
+	.tl li {
 		display: flex;
-		flex-direction: column;
+		gap: 0.6rem;
 		align-items: center;
-	}
-	.bar {
-		display: block;
-		width: 100%;
-		height: 56px;
-		border: 2px solid var(--muted);
-		opacity: 0.5;
-		border-radius: 3px;
-	}
-	.done .bar {
-		background: var(--text);
-		border-color: var(--text);
-		opacity: 1;
-	}
-	.now .bar {
-		background: var(--now);
-		border-color: var(--now);
-		opacity: 1;
-	}
-	.yl {
-		margin-top: 0.3rem;
-		font-size: 0.78rem;
-		color: var(--muted);
+		height: 32px;
+		line-height: 32px;
 		white-space: nowrap;
 	}
-	.now .yl {
-		color: var(--now);
+	.y {
+		flex: none;
+		width: 3.4em;
+		font-weight: 700;
+		color: var(--muted);
+	}
+	.row {
+		color: var(--muted);
+		font-size: 0.9rem;
+	}
+	.tl li.done .y {
+		color: var(--text);
+	}
+	.tl li.now .y {
+		color: var(--now-ink);
+	}
+	.tl li.now .row {
+		color: var(--text);
 		font-weight: 700;
 	}
-	figcaption {
-		margin-top: 0.6rem;
-		font-size: 0.8rem;
-		color: var(--muted);
+	/* 「いまここ」は付箋 */
+	.here {
+		flex: none;
+		background: var(--now);
+		color: var(--on-now);
+		font-size: 0.72rem;
+		font-weight: 700;
+		padding: 0 0.45rem;
+		line-height: 1.7;
+		transform: rotate(-3deg);
+		box-shadow: 1px 2px 3px rgb(0 0 0 / 0.18);
+	}
+	.stamp {
+		position: absolute;
+		width: 104px;
+		right: 0.7rem;
+		bottom: 1.3rem;
+		transform: rotate(-8deg);
+		opacity: 0.9;
+	}
+	.stamp rect {
+		stroke: var(--now);
+	}
+	.stamp text {
+		fill: var(--now-ink);
 	}
 
 	/* ヘッダー用 */
 	.mini {
-		--now: var(--deadline);
 		display: inline-flex;
 		align-items: center;
-		gap: 0.45rem;
+		gap: 0.5rem;
 		font-size: 0.8rem;
 		color: var(--muted);
 		white-space: nowrap;
 	}
-	.mini.calm {
-		--now: var(--accent);
-	}
-	.cells {
-		display: inline-grid;
-		grid-template-columns: repeat(6, 8px);
-		gap: 3px;
-	}
-	.cells i {
-		display: block;
-		height: 14px;
-		border: 1.5px solid var(--muted);
-		opacity: 0.55;
-		border-radius: 1px;
-	}
-	.cells i.done {
-		background: var(--text);
-		border-color: var(--text);
-		opacity: 1;
-	}
-	.cells i.now {
-		background: var(--now);
-		border-color: var(--now);
-		opacity: 1;
-	}
 	.mini-label b {
-		color: var(--now);
+		color: var(--deadline-ink);
 		font-size: 0.95rem;
+	}
+	.mini-label.calm b {
+		color: var(--accent);
 	}
 </style>

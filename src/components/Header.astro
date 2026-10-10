@@ -2,7 +2,7 @@
 import { SITE_TITLE } from '../consts';
 import SixYearScale from './SixYearScale.astro';
 
-// calm: 前日譚のページでは朱を出さない
+// calm: 前日譚のページでは「今年」の強調（珊瑚）を出さない
 const { calm = false } = Astro.props;
 
 const links = [
@@ -36,7 +36,7 @@ const path = Astro.url.pathname;
 	.site-header {
 		border-top: 4px solid var(--accent);
 		border-bottom: 1px solid var(--line);
-		background: var(--bg);
+		background: var(--card);
 	}
 	.inner {
 		max-width: var(--wide);
@@ -53,6 +53,7 @@ const path = Astro.url.pathname;
 		flex-wrap: wrap;
 		align-items: center;
 		gap: 0.3rem 1rem;
+		min-width: 0;
 	}
 	.gauge {
 		text-decoration: none;
@@ -75,6 +76,8 @@ const path = Astro.url.pathname;
 	nav {
 		display: flex;
 		gap: 1rem;
+		min-width: 0;
+		max-width: 100%;
 		overflow-x: auto;
 		white-space: nowrap;
 		font-size: 0.95rem;
@@ -88,6 +91,6 @@ const path = Astro.url.pathname;
 	nav a:hover,
 	nav a.active {
 		color: var(--text);
-		border-bottom-color: var(--accent);
+		border-bottom-color: var(--deadline);
 	}
 </style>

@@ -1,24 +1,32 @@
-/* モノトーン＋アクセント1色。スマホで読みやすいことを最優先にする。 */
+/* 配色＝案2（深緑×珊瑚）、方向性＝C（手帳・記録ノート）。スマホで読みやすいことを最優先にする。
+   editorial/デザイン基準.md の「配色と世界観」を参照。 */
 
 :root {
-	/* 地は彩度の低い生成り、文字は墨。朱（--deadline）は「期限」にだけ使う */
-	--bg: #faf8f4;
-	--text: #26231f;
-	--muted: #6b655c;
-	--line: #e4dfd5;
-	--subtle: #f2eee6;
-	--card: #fffdf9;
-	--accent: #1f6f6a;
-	--link: #1f6f6a;
-	--accent-soft: #e6efec;
-	--accent-strong: #17534f;
-	--deadline: #c8553d;
-	--deadline-soft: #f7e6e0;
-	--warn: #b4532a;
-	--warn-soft: #f8ede6;
-	--memo: #5a6b8c;
-	--memo-soft: #edf0f5;
-	--page: #f4f1ea;
+	/* 紙 #fff6e9・墨 #1b1b1b・主色 深緑 #0f5c4d・差し色 珊瑚 #ff6b4a・付箋/マーカー 黄 #ffd166 */
+	--bg: #fff6e9;
+	--grid: rgb(15 92 77 / 0.075);
+	--text: #1b1b1b;
+	--muted: #5f5a52;
+	--line: #e6d9c3;
+	--rule: #c9ddd6;
+	--subtle: #f7ead6;
+	--card: #fffdf8;
+	--accent: #0f5c4d;
+	--on-accent: #fff;
+	--link: #0f5c4d;
+	--accent-soft: #dcebe5;
+	--accent-strong: #0a4438;
+	/* 珊瑚：--deadline は塗り（上の文字は墨 --on-deadline）、文字に使うときは濃い --deadline-ink */
+	--deadline: #ff6b4a;
+	--on-deadline: #1b1b1b;
+	--deadline-ink: #b93216;
+	--deadline-soft: #ffe3da;
+	--warn: #ff6b4a;
+	--warn-soft: #ffeae3;
+	--memo: #ffd166;
+	--memo-soft: #ffeeb8;
+	--marker: #ffe08a;
+	--page: #f7ead6;
 	--mincho: 'Zen Old Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
 	--measure: 720px;
 	--wide: 1080px;
@@ -27,23 +35,29 @@
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--bg: #1b1a17;
-		--text: #e9e5dc;
-		--muted: #a59e92;
-		--line: #34312b;
-		--subtle: #24221e;
-		--card: #211f1b;
-		--accent: #3fa79f;
-		--link: #6cc5bd;
-		--accent-soft: #1d2d2a;
-		--accent-strong: #6cc5bd;
-		--deadline: #e07a62;
-		--deadline-soft: #3a2621;
-		--warn: #c9714a;
-		--warn-soft: #2d221d;
-		--memo: #7486a8;
-		--memo-soft: #1f2430;
-		--page: #161512;
+		--bg: #121c19;
+		--grid: rgb(255 246 233 / 0.04);
+		--text: #f3ecdf;
+		--muted: #a9b3ad;
+		--line: #2c3b36;
+		--rule: #2a3a35;
+		--subtle: #1a2622;
+		--card: #18231f;
+		--accent: #49b59c;
+		--on-accent: #0d1b17;
+		--link: #74d1ba;
+		--accent-soft: #1c332d;
+		--accent-strong: #74d1ba;
+		--deadline: #ff6b4a;
+		--on-deadline: #1b1b1b;
+		--deadline-ink: #ff8f74;
+		--deadline-soft: #3b231c;
+		--warn: #ff6b4a;
+		--warn-soft: #33211c;
+		--memo: #ffd166;
+		--memo-soft: #332b14;
+		--marker: rgb(255 209 102 / 0.3);
+		--page: #1a2622;
 		color-scheme: dark;
 	}
 }
@@ -60,7 +74,12 @@ html {
 
 body {
 	margin: 0;
-	background: var(--bg);
+	/* ページ地は薄い方眼。本文は .sheet（無地の紙）に載せる */
+	background-color: var(--bg);
+	background-image:
+		linear-gradient(var(--grid) 1px, transparent 1px),
+		linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+	background-size: 20px 20px;
 	color: var(--text);
 	font-family:
 		'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Yu Gothic UI', 'Yu Gothic', Meiryo,
@@ -104,15 +123,78 @@ h1 {
 	padding: 1.5rem 1rem;
 }
 
+/* 無地の紙（記事の本文・固定ページ）。方眼の上に1枚置く */
+.sheet,
+main.container.prose {
+	background: var(--card);
+	border: 1px solid var(--line);
+	border-radius: 3px;
+	box-shadow:
+		0 1px 0 var(--line),
+		0 8px 20px rgb(0 0 0 / 0.05);
+	padding: 1.25rem 0.9rem 1.75rem;
+}
+main.container.prose {
+	width: calc(100% - 1rem);
+	margin-top: 1.25rem;
+}
+@media (min-width: 700px) {
+	.sheet,
+	main.container.prose {
+		padding: 2rem 2.25rem 2.5rem;
+	}
+	main.container.prose {
+		margin-top: 2rem;
+	}
+}
+
+/* 6年ゲージの小型版（年表のマス）。ヘッダーと記事の「○年目」で使う */
+.yr-cells {
+	--now: var(--deadline);
+	--on-now: var(--on-deadline);
+	display: inline-flex;
+	flex: none;
+}
+.yr-cells.calm {
+	--now: var(--accent);
+	--on-now: var(--on-accent);
+}
+.yr-cells i {
+	display: block;
+	width: 15px;
+	height: 17px;
+	margin-left: -1px;
+	border: 1px solid var(--muted);
+	font-style: normal;
+	font-size: 10px;
+	font-weight: 700;
+	line-height: 15px;
+	text-align: center;
+	color: var(--muted);
+	background: var(--card);
+}
+.yr-cells i.done {
+	background: var(--text);
+	border-color: var(--text);
+	color: var(--bg);
+}
+.yr-cells i.now {
+	background: var(--now);
+	border-color: var(--text);
+	color: var(--on-now);
+	position: relative;
+}
+
 /* 記事・固定ページの本文 */
-/* h2：色の帯＋左の太線。h3：下線の短い色線で h2 と見分ける */
+/* h2：深緑の帯＋左に珊瑚の見出しタブ。h3：下線の短い色線で h2 と見分ける */
 .prose h2 {
 	font-size: 1.3rem;
 	margin: 3rem 0 1.25rem;
 	padding: 0.55rem 0.9rem;
-	background: var(--accent-soft);
-	border-left: 6px solid var(--accent);
-	border-radius: 0 6px 6px 0;
+	background: var(--accent);
+	color: var(--on-accent);
+	border-left: 8px solid var(--deadline);
+	border-radius: 2px;
 	scroll-margin-top: 1rem;
 }
 
@@ -132,11 +214,12 @@ h1 {
 	bottom: -2px;
 	width: 3em;
 	height: 2px;
-	background: var(--accent);
+	background: var(--deadline);
 }
 
 .prose strong {
-	background: linear-gradient(transparent 62%, var(--accent-soft) 62%);
+	/* 黄のマーカー */
+	background: linear-gradient(transparent 62%, var(--marker) 62%);
 }
 
 .prose p,
@@ -180,6 +263,8 @@ h1 {
 	text-align: left;
 	vertical-align: top;
 	min-width: 6em;
+	/* 数字と単位（50,000円）を途中で折らない。表は横スクロールする */
+	overflow-wrap: normal;
 }
 
 .prose th {

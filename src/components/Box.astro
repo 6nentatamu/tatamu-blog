@@ -1,5 +1,6 @@
 ---
 // 強調ボックスの共通部品。Point / Caution / Memo から使う
+// point＝深緑のノート（左に綴じ線）、caution＝珊瑚の付箋、memo＝黄色の付箋（テープ留め）
 interface Props {
 	kind: 'point' | 'caution' | 'memo';
 	title: string;
@@ -15,28 +16,45 @@ const icon = { point: '✓', caution: '!', memo: '✎' }[kind];
 
 <style>
 	.box {
-		margin: 1.75rem 0;
-		border-radius: 10px;
-		border: 2px solid var(--c);
-		overflow: hidden;
+		position: relative;
+		margin: 2rem 0 1.75rem;
+		padding: 0.9rem 1.1rem 1rem;
+		background: var(--bgc);
+		color: var(--text);
+		box-shadow: 1px 3px 6px rgb(0 0 0 / 0.1);
 	}
 	.point {
 		--c: var(--accent);
+		--on-c: var(--on-accent);
 		--bgc: var(--accent-soft);
+		border-left: 6px double var(--accent);
 	}
 	.caution {
 		--c: var(--warn);
+		--on-c: var(--on-deadline);
 		--bgc: var(--warn-soft);
+		border-top: 6px solid var(--warn);
 	}
 	.memo {
 		--c: var(--memo);
+		--on-c: #1b1b1b;
 		--bgc: var(--memo-soft);
 	}
+	/* 黄色の付箋はテープで留める */
+	.memo::before {
+		content: '';
+		position: absolute;
+		top: -10px;
+		left: 50%;
+		width: 84px;
+		height: 20px;
+		margin-left: -42px;
+		background: var(--memo);
+		opacity: 0.8;
+		transform: rotate(-2deg);
+	}
 	.box-title {
-		margin: 0 !important;
-		padding: 0.4rem 1rem;
-		background: var(--c);
-		color: #fff;
+		margin: 0 0 0.5rem !important;
 		font-weight: 700;
 		font-size: 0.95rem;
 		display: flex;
@@ -44,17 +62,15 @@ const icon = { point: '✓', caution: '!', memo: '✎' }[kind];
 		gap: 0.5rem;
 	}
 	.icon {
+		flex: none;
 		display: inline-grid;
 		place-items: center;
-		width: 1.4em;
-		height: 1.4em;
+		width: 1.5em;
+		height: 1.5em;
 		border-radius: 50%;
-		background: rgb(255 255 255 / 0.25);
+		background: var(--c);
+		color: var(--on-c);
 		font-size: 0.85em;
-	}
-	.box-body {
-		padding: 0.9rem 1.1rem;
-		background: var(--bgc);
 	}
 	.box-body :global(> :last-child) {
 		margin-bottom: 0;
