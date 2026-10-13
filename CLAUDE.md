@@ -1,4 +1,4 @@
-# 6年でたたむひとり法人（Astro）— 作業ルール
+# 6年でたたむマイクロ法人（Astro）— 作業ルール
 
 - 記事は `src/content/posts/` に `.md` / `.mdx` で置く
 - frontmatter: `title`, `description`, `pubDate`, `updatedDate?`, `category`（prequel|concept|design|setup|operation|monthly）, `order?`（部内の並び順）, `tags[]`, `pr`（アフィリエイトありなら true＝冒頭にPR表記）, `draft`（true は本番ビルドに出ない）
