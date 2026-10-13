@@ -1,0 +1,298 @@
+---
+// 3つの形の年間負担を比べる計算機
+//   A：個人・源泉徴収あり（確定申告しない）／B：個人・確定申告する／C：マイクロ法人
+//   <FireCalc />
+// 計算はブラウザの中だけで行い、入力した数字はどこにも送らない。計算式は src/lib/firecalc.ts。
+// 初期値は説明用の例（特定の自治体の料率ではない）。
+---
+
+<div class="firecalc" data-firecalc>
+	<p class="fc-title">3つの形で、年にいくら違うか</p>
+
+	<div class="fc-grid">
+		<label>
+			<span>株や投資信託を売って出る利益（万円）</span>
+			<input type="number" data-k="cap" value="200" min="0" step="10" inputmode="decimal" />
+		</label>
+		<label>
+			<span>配当（万円）</span>
+			<input type="number" data-k="div" value="0" min="0" step="10" inputmode="decimal" />
+		</label>
+		<label>
+			<span>国保の所得割の率（％）</span>
+			<input type="number" data-k="rate" value="11" min="0" step="0.01" inputmode="decimal" />
+			<small>医療分＋支援金分＋介護分などの合計</small>
+		</label>
+		<label>
+			<span>国保の均等割（1人の年額・円）</span>
+			<input type="number" data-k="flat" value="70000" min="0" step="1000" inputmode="numeric" />
+			<small>同じく合計。平等割があれば足す</small>
+		</label>
+		<label>
+			<span>国保と国民年金に入る人数</span>
+			<select data-k="n">
+				<option value="1" selected>1人（本人だけ）</option>
+				<option value="2">2人（夫婦とも）</option>
+			</select>
+			<small>法人の場合、配偶者は扶養に入る前提</small>
+		</label>
+	</div>
+
+	<details class="fc-more">
+		<summary>くわしい設定（iDeCo・役員報酬など）</summary>
+		<div class="fc-grid">
+			<label>
+				<span>iDeCoの掛金・個人のとき（年・円）</span>
+				<input type="number" data-k="ideco1" value="0" min="0" step="12000" inputmode="numeric" />
+				<small>上限は月6.8万円（年81.6万円）</small>
+			</label>
+			<label>
+				<span>iDeCoの掛金・法人のとき（年・円）</span>
+				<input type="number" data-k="ideco2" value="0" min="0" step="12000" inputmode="numeric" />
+				<small>会社員と同じ枠になる</small>
+			</label>
+			<label>
+				<span>国民年金（1人の年額・円）</span>
+				<input type="number" data-k="pension" value="211000" min="0" step="1000" inputmode="numeric" />
+			</label>
+			<label>
+				<span>役員報酬（月額・円）</span>
+				<input type="number" data-k="salary" value="45000" min="0" step="1000" inputmode="numeric" />
+			</label>
+			<label>
+				<span>法人の社会保険料（年・円）</span>
+				<input type="number" data-k="shaho" value="277000" min="0" step="1000" inputmode="numeric" />
+				<small>会社と本人の合計。役員報酬が月4.5万円の例</small>
+			</label>
+			<label>
+				<span>法人の維持費（年・円）</span>
+				<input type="number" data-k="keep" value="93000" min="0" step="1000" inputmode="numeric" />
+				<small>赤字でもかかる税金＋会計と申告のソフト</small>
+			</label>
+		</div>
+	</details>
+
+	<div class="fc-result" aria-live="polite">
+		<div class="fc-item" data-row="a">
+			<div class="fc-row">
+				<span class="fc-lbl">A　個人・申告しない</span>
+				<span class="fc-bar"><i data-o="bar"></i></span>
+				<b data-o="total"></b>
+			</div>
+			<p class="fc-sub" data-o="detail"></p>
+		</div>
+		<div class="fc-item" data-row="b">
+			<div class="fc-row">
+				<span class="fc-lbl">B　個人・確定申告する</span>
+				<span class="fc-bar"><i data-o="bar"></i></span>
+				<b data-o="total"></b>
+			</div>
+			<p class="fc-sub" data-o="detail"></p>
+		</div>
+		<div class="fc-item" data-row="c">
+			<div class="fc-row">
+				<span class="fc-lbl">C　マイクロ法人</span>
+				<span class="fc-bar"><i data-o="bar"></i></span>
+				<b data-o="total"></b>
+			</div>
+			<p class="fc-sub" data-o="detail"></p>
+		</div>
+		<p class="fc-verdict" data-o="verdict"></p>
+		<p class="fc-sub" data-o="even"></p>
+	</div>
+
+	<p class="fc-note">
+		Aは、売るたびに20.315%が引かれて終わる形です。国保は所得0円の扱いになりますが、住民税の申告は別に要ります。入力した数字は、あなたのブラウザの外には送られません。
+	</p>
+</div>
+
+<script>
+	import { calcAll, type CalcInput, type Row } from '../lib/firecalc';
+
+	const man = (yen: number) => (Math.round(yen / 1000) / 10).toLocaleString('ja-JP') + '万円';
+	const NAMES = { a: 'A（申告しない）', b: 'B（確定申告する）', c: 'C（マイクロ法人）' } as const;
+	type Key = keyof typeof NAMES;
+
+	document.querySelectorAll<HTMLElement>('[data-firecalc]').forEach((root) => {
+		const get = (k: string) => {
+			const el = root.querySelector<HTMLInputElement | HTMLSelectElement>(`[data-k="${k}"]`)!;
+			const x = Number(el.value);
+			return Number.isFinite(x) && x > 0 ? x : 0;
+		};
+		const out = (k: string) => root.querySelector<HTMLElement>(`:scope > .fc-result > [data-o="${k}"]`)!;
+
+		function read(): CalcInput {
+			return {
+				capGain: get('cap') * 10000,
+				dividend: get('div') * 10000,
+				nhiRate: get('rate'),
+				nhiFlat: get('flat'),
+				persons: get('n') || 1,
+				pension: get('pension'),
+				idecoSolo: get('ideco1'),
+				idecoCorp: get('ideco2'),
+				salaryMonthly: get('salary'),
+				shaho: get('shaho'),
+				keep: get('keep'),
+			};
+		}
+
+		function detail(key: Key, r: Row) {
+			const red = r.reduction > 0 ? `・均等割は${Math.round(r.reduction * 10)}割軽減` : '';
+			return key === 'c'
+				? `税 ${man(r.tax)}／社会保険料 ${man(r.shaho)}／維持費 ${man(r.keep)}`
+				: `税 ${man(r.tax)}／国保 ${man(r.health)}${red}／国民年金 ${man(r.pension)}`;
+		}
+
+		function render() {
+			const v = read();
+			const res = calcAll(v);
+			const keys: Key[] = ['a', 'b', 'c'];
+			const max = Math.max(...keys.map((k) => res[k].total), 1);
+			const best = keys.reduce((p, k) => (res[k].total < res[p].total ? k : p), 'a' as Key);
+
+			for (const k of keys) {
+				const item = root.querySelector<HTMLElement>(`[data-row="${k}"]`)!;
+				item.querySelector<HTMLElement>('[data-o="total"]')!.textContent = '年 ' + man(res[k].total);
+				const bar = item.querySelector<HTMLElement>('[data-o="bar"]')!;
+				bar.style.width = (res[k].total / max) * 100 + '%';
+				bar.classList.toggle('on', k === best);
+				item.querySelector<HTMLElement>('[data-o="detail"]')!.textContent = detail(k, res[k]);
+			}
+
+			const others = keys.filter((k) => k !== best);
+			out('verdict').textContent =
+				`いちばん安いのは ${NAMES[best]} です。` +
+				others.map((k) => `${NAMES[k].slice(0, 1)}より年 ${man(res[k].total - res[best].total)}`).join('、') +
+				' 安くなります。';
+
+			// 分かれ目：配当はそのままで、売って出る利益を10万円ずつ増やし、法人がAとBの両方より安くなる点を探す
+			let even = -1;
+			for (let g = 0; g <= 3000; g += 10) {
+				const r = calcAll({ ...v, capGain: g * 10000 });
+				if (r.c.total <= r.a.total && r.c.total <= r.b.total) {
+					even = g;
+					break;
+				}
+			}
+			out('even').textContent =
+				even < 0
+					? 'いまの入力では、売って出る利益が3,000万円でも、法人がいちばん安くはなりません。'
+					: even === 0
+						? 'いまの入力では、売って出る利益が0円でも、法人がいちばん安くなります。'
+						: `いまの入力では、売って出る利益が年 約${even.toLocaleString('ja-JP')}万円から、法人がいちばん安くなります。`;
+		}
+
+		root.querySelectorAll('input, select').forEach((el) => el.addEventListener('input', render));
+		render();
+	});
+</script>
+
+<style>
+	.firecalc {
+		margin: 1.5rem 0;
+		padding: 1rem 1.1rem 1.1rem;
+		border: 2px solid var(--accent);
+		border-radius: 6px;
+	}
+	.fc-title {
+		font-weight: 700;
+		margin: 0 0 0.8rem !important;
+	}
+	.fc-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+		gap: 0.7rem 1rem;
+	}
+	.fc-grid label {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		font-size: 0.85rem;
+		color: var(--muted);
+	}
+	.fc-grid small {
+		font-size: 0.75rem;
+	}
+	.fc-grid input,
+	.fc-grid select {
+		font: inherit;
+		font-size: 1rem;
+		padding: 0.45rem 0.55rem;
+		border: 1px solid var(--muted);
+		border-radius: 4px;
+		background: transparent;
+		color: var(--text);
+		width: 100%;
+		box-sizing: border-box;
+	}
+	.fc-more {
+		margin-top: 0.9rem;
+		font-size: 0.9rem;
+	}
+	.fc-more summary {
+		cursor: pointer;
+		color: var(--muted);
+		margin-bottom: 0.7rem;
+	}
+	.fc-result {
+		margin-top: 1rem;
+		padding-top: 0.9rem;
+		border-top: 1px solid var(--muted);
+	}
+	.fc-item {
+		margin: 0.6rem 0;
+	}
+	.fc-row {
+		display: grid;
+		grid-template-columns: 11em 1fr 7em;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.95rem;
+	}
+	.fc-row b {
+		text-align: right;
+		white-space: nowrap;
+	}
+	.fc-bar {
+		display: block;
+		height: 18px;
+	}
+	.fc-bar i {
+		display: block;
+		height: 100%;
+		min-width: 2px;
+		border-radius: 3px;
+		background: var(--muted);
+		opacity: 0.45;
+		transition: width 0.2s;
+	}
+	.fc-bar i.on {
+		background: var(--accent);
+		opacity: 1;
+	}
+	.fc-verdict {
+		font-weight: 700;
+		font-size: 1.05rem;
+		margin: 0.9rem 0 0.3rem !important;
+	}
+	.fc-sub {
+		font-size: 0.8rem;
+		color: var(--muted);
+		margin: 0.15rem 0 !important;
+	}
+	.fc-note {
+		font-size: 0.8rem;
+		color: var(--muted);
+		margin: 0.8rem 0 0 !important;
+	}
+	@media (max-width: 520px) {
+		.fc-row {
+			grid-template-columns: 1fr 7em;
+		}
+		.fc-bar {
+			grid-column: 1 / -1;
+			grid-row: 2;
+		}
+	}
+</style>
