@@ -31,10 +31,10 @@ export const SERVICES: Service[] = [
 		officialUrl: 'https://www.smbc-card.com/camp/biz_owners/index.html',
 	},
 	{
-		name: 'リーガルスクリプト',
+		name: '弥生のかんたん会社設立',
 		group: '設立',
-		use: '電子定款の作成（印紙代4万円がかからない）',
-		officialUrl: 'https://legal-script.com/',
+		use: '設立書類の作成と電子定款（印紙代4万円がかからない）',
+		officialUrl: 'https://www.yayoi-kk.co.jp/services/kigyo/setsuritsu/',
 	},
 	{
 		name: '全力会計・全力電子帳簿',
