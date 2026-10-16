@@ -13,8 +13,8 @@ export const SERIES: Partial<Record<CategoryId, PlannedPost[]>> = {
 	],
 	design: [
 		{ title: 'いくら得か：投資利益別の感度分析' },
-		{ title: '役員報酬をいくらにしたか' },
-		{ title: '法人の資金計画：資本金100万＋役員借入金200万' },
+		{ title: '役員報酬をいくらにしたか', slug: 'design-1-houshu' },
+		{ title: '法人の資金計画：資本金100万＋役員借入金200万', slug: 'design-2-shihonkin' },
 		{ title: 'モンテカルロで下振れに耐えるか確かめた' },
 		{ title: '終わり方から逆算する：解散の税務と健康保険' },
 		{ title: '却下した案の記録' },
