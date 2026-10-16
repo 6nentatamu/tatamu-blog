@@ -35,6 +35,8 @@ export const SERVICES: Service[] = [
 		group: '設立',
 		use: '設立書類の作成と電子定款（印紙代4万円がかからない）',
 		officialUrl: 'https://www.yayoi-kk.co.jp/services/kigyo/setsuritsu/',
+		post: 'setup-1-hiyou',
+		affiliateUrl: 'https://px.a8.net/svt/ejp?a8mat=4BEHXA+BT3IPE+35XE+HXSGI',
 	},
 	{
 		name: '全力会計・全力電子帳簿',
