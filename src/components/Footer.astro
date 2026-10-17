@@ -18,9 +18,9 @@ const year = new Date().getFullYear();
 	.site-footer {
 		margin-top: 4rem;
 		padding: 2rem 1rem 3rem;
-		/* 深緑の帯（ライト・ダーク共通の固定色） */
-		background: #0a4438;
-		color: #d9e8e2;
+		background: var(--bg);
+		border-top: 1px solid var(--line);
+		color: var(--muted);
 		font-size: 0.875rem;
 		text-align: center;
 	}
@@ -32,6 +32,6 @@ const year = new Date().getFullYear();
 		margin-bottom: 1rem;
 	}
 	a {
-		color: #fff6e9;
+		color: var(--text);
 	}
 </style>

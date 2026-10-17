@@ -54,7 +54,7 @@ const image = ogPath(post);
 				{
 					summary && (
 						<section class="summary" aria-label="この記事の結論">
-							<p class="summary-title"><span>CONCLUSION</span>この記事の結論</p>
+							<p class="summary-title">この記事の結論</p>
 							<p class="summary-body">{summary}</p>
 						</section>
 					)
@@ -171,34 +171,25 @@ const image = ogPath(post);
 		line-height: 1.5;
 		margin: 0.4rem 0 1.1rem;
 	}
-	/* 結論：この記事で唯一の濃い深緑ベタ。ここだけ白抜き文字にして役割を分ける */
+	/* 結論：白地に深緑の2px枠。文字は本文色のまま。h2（淡い面＋左線）とは枠で見分ける */
 	.summary {
+		border: 2px solid var(--accent);
 		border-radius: 10px;
 		margin: 0 0 1.75rem;
-		padding: 1.15rem 1.35rem 1.3rem;
-		background: var(--accent);
-		color: var(--on-accent);
+		padding: 1rem 1.3rem 1.1rem;
+		background: var(--bg);
+		color: var(--text);
 	}
 	.summary-title {
-		display: flex;
-		align-items: baseline;
-		gap: 0.7rem;
-		margin: 0 0 0.55rem;
-		padding-bottom: 0.55rem;
-		border-bottom: 1px solid rgb(255 255 255 / 0.35);
+		margin: 0 0 0.4rem;
 		font-size: 0.85rem;
 		letter-spacing: 0.08em;
 		font-weight: 700;
-	}
-	.summary-title span {
-		font-family: var(--mincho);
-		font-size: 0.95rem;
-		letter-spacing: 0.18em;
-		opacity: 0.85;
+		color: var(--accent-strong);
 	}
 	.summary-body {
 		margin: 0;
-		font-weight: 700;
+		font-weight: 500;
 		font-size: 1.05rem;
 		line-height: 1.9;
 		white-space: pre-line;
