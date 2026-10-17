@@ -4,12 +4,13 @@
 :root {
 	/* 方針：白地・深緑1色・見出しは文字の大小と細線だけ。珊瑚は「今年／締切」の1点にだけ使う */
 	--bg: #ffffff;
+	--canvas: #eef3f1;
 	--grid: transparent;
 	--text: #1c2421;
 	--muted: #59645f;
 	--line: #e2e8e5;
 	--rule: #e2e8e5;
-	--subtle: #f5f8f7;
+	--subtle: #f1f5f3;
 	--card: #ffffff;
 	--accent: #0f5c4d;
 	--on-accent: #fff;
@@ -22,10 +23,10 @@
 	--deadline-soft: #fff0eb;
 	--aff-bg: #ffffff;
 	--aff-ink: #1c2421;
-	--aff-line: #0f5c4d;
-	--aff-tab: #0f5c4d;
-	--on-aff-tab: #ffffff;
-	--aff-hover: #eef5f2;
+	--aff-line: #b93216;
+	--aff-tab: #ff6b4a;
+	--on-aff-tab: #1b1b1b;
+	--aff-hover: #fff0eb;
 	--warn: #b93216;
 	--warn-soft: #fff4f0;
 	--memo: #a8741a;
@@ -47,13 +48,14 @@
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--bg: #0f1614;
+		--bg: #131d1a;
+		--canvas: #0b1110;
 		--text: #e9efec;
 		--muted: #a2afa9;
 		--line: #26332f;
 		--rule: #26332f;
-		--subtle: #16201d;
-		--card: #0f1614;
+		--subtle: #1b2723;
+		--card: #131d1a;
 		--accent: #4fb89f;
 		--on-accent: #0b1512;
 		--link: #7dd6c0;
@@ -63,12 +65,12 @@
 		--on-deadline: #1b1b1b;
 		--deadline-ink: #ff9a82;
 		--deadline-soft: #2c1c17;
-		--aff-bg: #0f1614;
+		--aff-bg: #131d1a;
 		--aff-ink: #e9efec;
-		--aff-line: #4fb89f;
-		--aff-tab: #4fb89f;
-		--on-aff-tab: #0b1512;
-		--aff-hover: #15251f;
+		--aff-line: #ff9a82;
+		--aff-tab: #ff7a5c;
+		--on-aff-tab: #1b1b1b;
+		--aff-hover: #2c1c17;
 		--warn: #ff9a82;
 		--warn-soft: #2a1b17;
 		--memo: #e0b25a;
@@ -96,7 +98,7 @@ html {
 
 body {
 	margin: 0;
-	background-color: var(--bg);
+	background-color: var(--canvas);
 	color: var(--text);
 	font-family: var(--sans);
 	font-size: 17px;
@@ -141,18 +143,24 @@ h1 {
 	padding: 1.5rem 1rem;
 }
 
-/* 記事・固定ページの本文。枠も影もなし、白地にそのまま載せる */
+/* 記事・固定ページの本文は、地（薄い緑灰）の上に置いた白い紙面1枚。紙面の外＝ヘッダー・サイドバー・記事末 */
 .sheet,
 main.container.prose {
-	padding: 1.25rem 1rem 1.75rem;
+	background: var(--bg);
+	border-radius: 12px;
+	padding: 1.5rem 1.15rem 2rem;
 }
 main.container.prose {
+	width: calc(100% - 1rem);
 	margin-top: 1rem;
 }
 @media (min-width: 700px) {
 	.sheet,
 	main.container.prose {
-		padding: 1.5rem 0 2.5rem;
+		padding: 2.25rem 2.75rem 3rem;
+	}
+	main.container.prose {
+		margin-top: 2rem;
 	}
 }
 
@@ -193,46 +201,28 @@ main.container.prose {
 	position: relative;
 }
 
-/* 見出し：h2＝大きく太く、下に細い罫（短い深緑の線つき）。h3＝深緑の太字のみ。帯・影・タブは使わない */
-.sheet {
-	counter-reset: sec;
-}
-.sheet h2 {
-	counter-increment: sec;
-}
-.sheet h2::before {
-	content: counter(sec, decimal-leading-zero);
-	display: block;
-	margin-bottom: 0.15rem;
-	font-family: var(--mincho);
-	font-size: 0.95rem;
-	letter-spacing: 0.15em;
-	color: var(--accent);
-}
+/* 見出し：h2＝淡い緑の面＋左の太い深緑線（節の頭がひと目で分かる）。h3＝左に細い線の太字。本文は見出しより細い色 */
 .prose h2 {
-	font-size: 1.45rem;
+	font-size: 1.5rem;
+	font-weight: 700;
 	line-height: 1.5;
-	margin: 3.5rem 0 1.4rem;
-	padding: 0 0 0.6rem;
-	border-bottom: 1px solid var(--line);
-	position: relative;
+	margin: 4.25rem 0 1.6rem;
+	padding: 0.7rem 1rem 0.7rem 1.1rem;
+	background: var(--accent-soft);
+	border-left: 6px solid var(--accent);
+	border-radius: 0 8px 8px 0;
 	color: var(--text);
 	scroll-margin-top: 1rem;
 }
-.prose h2::after {
-	content: '';
-	position: absolute;
-	left: 0;
-	bottom: -1px;
-	width: 3rem;
-	height: 3px;
-	background: var(--accent);
-}
 
 .prose h3 {
-	font-size: 1.15rem;
-	margin: 2.4rem 0 0.7rem;
-	color: var(--accent-strong);
+	font-size: 1.2rem;
+	font-weight: 700;
+	line-height: 1.55;
+	margin: 3rem 0 0.9rem;
+	padding-left: 0.75rem;
+	border-left: 4px solid var(--accent);
+	color: var(--text);
 	scroll-margin-top: 1rem;
 }
 
@@ -274,23 +264,36 @@ main.container.prose {
 	margin-bottom: 0;
 }
 
-/* 表：横罫だけ。見出し行は太字＋下線2px。スマホは横スクロール */
+/* 表：見出し行を淡い緑で塗り、行は横罫。外枠で表のまとまりを示す。スマホは横スクロール */
 .prose table {
-	display: block;
-	max-width: 100%;
-	overflow-x: auto;
+	display: table;
+	width: 100%;
 	border-collapse: collapse;
-	margin: 0 0 1.75rem;
+	margin: 0 0 2rem;
 	font-size: 0.93rem;
 	line-height: 1.65;
-	-webkit-overflow-scrolling: touch;
+	border-top: 2px solid var(--accent);
+	border-bottom: 1px solid var(--line);
+}
+@media (max-width: 699px) {
+	.prose table {
+		display: block;
+		max-width: 100%;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+	.prose th,
+	.prose td {
+		padding: 0.6rem 0.55rem;
+		min-width: 0;
+	}
 }
 
 .prose th,
 .prose td {
 	border: none;
 	border-bottom: 1px solid var(--line);
-	padding: 0.65rem 0.9rem 0.65rem 0;
+	padding: 0.7rem 0.9rem;
 	text-align: left;
 	vertical-align: top;
 	min-width: 6em;
@@ -300,13 +303,16 @@ main.container.prose {
 .prose th {
 	font-weight: 700;
 	white-space: nowrap;
-	border-bottom: 2px solid var(--text);
+	background: var(--accent-soft);
+	color: var(--accent-strong);
 	font-size: 0.88rem;
-	color: var(--muted);
 }
 
 .prose td:first-child {
 	font-weight: 500;
+}
+.prose td:not(:first-child) {
+	white-space: nowrap;
 }
 
 .prose code {

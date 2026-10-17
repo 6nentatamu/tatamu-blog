@@ -33,25 +33,27 @@ const { items } = Astro.props;
 		font-weight: 700;
 		color: var(--muted);
 	}
+	/* 数字カード：白地に細枠、左に太い深緑線。数字だけ大きい明朝。結論（ベタ）・表（面）と見分ける */
 	.ledger {
 		margin: 0;
-		background: var(--card);
-		border-top: 2px solid var(--text);
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+		gap: 0.75rem;
 	}
-	/* 1行＝項目｜数字。狭いときは数字が次の行に落ちる（はみ出さない） */
 	.kn {
 		display: flex;
-		flex-wrap: wrap;
-		align-items: baseline;
+		flex-direction: column;
 		justify-content: space-between;
-		gap: 0 1rem;
-		padding: 0.6rem 0.2rem;
-		border-bottom: 1px solid var(--rule);
+		gap: 0.35rem;
+		padding: 0.8rem 1rem 0.85rem;
+		border: 1px solid var(--line);
+		border-left: 4px solid var(--accent);
+		border-radius: 8px;
+		background: var(--bg);
 	}
 	dt {
-		flex: 1 1 9em;
 		min-width: 0;
-		font-size: 0.9rem;
+		font-size: 0.85rem;
 		line-height: 1.5;
 	}
 	.note {
@@ -63,10 +65,9 @@ const { items } = Astro.props;
 		margin: 0;
 	}
 	.v {
-		margin-left: auto;
 		max-width: 100%;
 		font-family: var(--mincho);
-		font-size: 1.7rem;
+		font-size: 1.75rem;
 		font-weight: 700;
 		line-height: 1.4;
 		color: var(--accent-strong);

@@ -38,15 +38,15 @@ const { href, button = false } = Astro.props;
 		justify-content: space-between;
 		box-sizing: border-box;
 		width: 100%;
-		max-width: 360px;
+		max-width: 460px;
 		min-height: 52px;
 		margin: 1.25rem auto;
-		padding: 0.5rem 0 0.5rem 1.1rem;
+		padding: 0.4rem 0 0.4rem 1.1rem;
 		overflow: hidden;
-		border: 1.5px solid var(--aff-line);
+		border: 2px solid var(--aff-line);
 		border-radius: 8px;
-		background: var(--aff-tab);
-		color: var(--on-aff-tab);
+		background: var(--aff-bg);
+		color: var(--aff-ink);
 		font-size: 1rem;
 		font-weight: 700;
 		line-height: 1.5;
@@ -56,25 +56,27 @@ const { href, button = false } = Astro.props;
 	}
 	.aff-button .aff-arrow {
 		display: flex;
+		align-self: stretch;
 		align-items: center;
 		justify-content: center;
 		flex: none;
 		order: 2;
 		margin: 0;
 		padding: 0 1rem;
-		background: transparent;
-		color: inherit;
+		border-left: 2px solid var(--aff-line);
+		background: var(--aff-tab);
+		color: var(--on-aff-tab);
 		font-size: 1.15rem;
 		font-weight: 700;
 		line-height: 1;
 	}
 	@media (hover: hover) {
 		.aff-button:hover {
-			filter: brightness(0.92);
+			background: var(--aff-hover);
 		}
 	}
 	.aff-button:active {
-		filter: brightness(0.85);
+		background: var(--subtle);
 	}
 
 	.aff-link:focus-visible,
