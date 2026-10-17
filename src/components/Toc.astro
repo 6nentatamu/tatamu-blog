@@ -24,11 +24,9 @@ const items = Astro.props.headings.filter((h) => h.depth === 2 || h.depth === 3)
 
 <style>
 	.toc {
-		background: var(--subtle);
-		border: 1px solid var(--line);
-		border-left: 3px double var(--accent);
-		border-radius: 3px;
-		padding: 0.9rem 1.2rem;
+		border-top: 1px solid var(--line);
+		border-bottom: 1px solid var(--line);
+		padding: 1rem 0;
 		margin: 0 0 2rem;
 	}
 	.title {

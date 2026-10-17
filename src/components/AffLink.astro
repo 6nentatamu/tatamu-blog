@@ -9,21 +9,82 @@ interface Props {
 const { href, button = false } = Astro.props;
 ---
 
-<a href={href} rel="sponsored noopener" target="_blank" class={button ? 'aff-button' : undefined}><slot /></a>
+<a href={href} rel="sponsored noopener" target="_blank" class={button ? 'aff-button' : 'aff-link'}><slot /><span class="aff-arrow" aria-hidden="true">↗</span></a>
 
 <style>
-	.aff-button {
-		display: inline-block;
-		margin: 0.5rem 0;
-		padding: 0.7rem 1.4rem;
-		border-radius: 4px;
-		background: var(--accent);
-		color: var(--on-accent);
-		box-shadow: 3px 3px 0 var(--deadline);
-		font-weight: 700;
-		text-decoration: none;
+	/* 文中：本文と同じ墨の太字＋濃い珊瑚の2px下線。矢印・色文字・色背景は使わない（2026-10-17 専門家会議 第2回） */
+	.aff-link {
+		color: var(--text);
+		font-weight: 600;
+		text-decoration: underline;
+		text-decoration-color: var(--deadline-ink);
+		text-decoration-thickness: 2px;
+		text-underline-offset: 0.22em;
 	}
-	.aff-button:hover {
-		opacity: 0.9;
+	.aff-link .aff-arrow {
+		display: none;
+	}
+	@media (hover: hover) {
+		.aff-link:hover {
+			background: var(--deadline-soft);
+			text-decoration-thickness: 3px;
+		}
+	}
+
+	/* ボタン：深緑ベタ1色＋右に矢印。平ら・影なし。スマホは横いっぱい、PCは最大360px・中央 */
+	.aff-button {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		box-sizing: border-box;
+		width: 100%;
+		max-width: 360px;
+		min-height: 52px;
+		margin: 1.25rem auto;
+		padding: 0.5rem 0 0.5rem 1.1rem;
+		overflow: hidden;
+		border: 1.5px solid var(--aff-line);
+		border-radius: 8px;
+		background: var(--aff-tab);
+		color: var(--on-aff-tab);
+		font-size: 1rem;
+		font-weight: 700;
+		line-height: 1.5;
+		text-align: left;
+		text-decoration: none;
+		transition: background-color 0.15s;
+	}
+	.aff-button .aff-arrow {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex: none;
+		order: 2;
+		margin: 0;
+		padding: 0 1rem;
+		background: transparent;
+		color: inherit;
+		font-size: 1.15rem;
+		font-weight: 700;
+		line-height: 1;
+	}
+	@media (hover: hover) {
+		.aff-button:hover {
+			filter: brightness(0.92);
+		}
+	}
+	.aff-button:active {
+		filter: brightness(0.85);
+	}
+
+	.aff-link:focus-visible,
+	.aff-button:focus-visible {
+		outline: 3px solid var(--link);
+		outline-offset: 3px;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.aff-button {
+			transition: none;
+		}
 	}
 </style>

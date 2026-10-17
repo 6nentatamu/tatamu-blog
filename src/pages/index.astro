@@ -47,11 +47,6 @@ const entries = [
 <Base title={SITE_TITLE} description={SITE_DESCRIPTION}>
 	<section class="in hero">
 		<div class="page">
-			<svg class="stamp" viewBox="0 0 120 120" aria-hidden="true">
-				<circle cx="60" cy="60" r="52" fill="none" stroke-width="5"></circle>
-				<circle cx="60" cy="60" r="43" fill="none" stroke-width="1.5"></circle>
-				<text x="60" y="72" text-anchor="middle" font-size="34" font-weight="700" font-family="serif">設立</text>
-			</svg>
 			<p class="eyebrow">ギリギリFIREの国保と税を、マイクロ法人で乗り切る記録</p>
 			<h1>解散日まで決めて、<br />マイクロ法人を作りました。</h1>
 			<p class="lead">
@@ -97,7 +92,7 @@ const entries = [
 			<ol class="parts">
 				{
 					parts.map((c, i) => (
-						<li style={`--r:${(i % 2 ? 1 : -1) * 0.8}deg`}>
+						<li>
 							<a href={`/series/#part-${i}`}>
 								<span class="no">第{i}部</span>
 								<span class="name">{c.name}</span>
@@ -142,24 +137,8 @@ const entries = [
 		position: relative;
 		min-width: 0;
 	}
-	/* 丸いスタンプ「設立」＝深緑 */
-	.stamp {
-		position: absolute;
-		width: 84px;
-		right: 0;
-		top: -0.5rem;
-		transform: rotate(12deg);
-		opacity: 0.85;
-	}
-	.stamp circle {
-		stroke: var(--accent);
-	}
-	.stamp text {
-		fill: var(--accent);
-	}
 	.eyebrow {
 		margin: 0 0 0.6rem;
-		padding-right: 90px;
 		font-size: 0.85rem;
 		font-weight: 700;
 		color: var(--accent);
@@ -177,8 +156,6 @@ const entries = [
 		width: 100%;
 		border-collapse: collapse;
 		margin-bottom: 1.4rem;
-		background: var(--card);
-		box-shadow: 0 1px 0 var(--line);
 	}
 	.ledger caption {
 		text-align: left;
@@ -193,14 +170,13 @@ const entries = [
 	}
 	.ledger tr:first-child th,
 	.ledger tr:first-child td {
-		border-top: 2px solid var(--accent);
+		border-top: 2px solid var(--text);
 	}
 	.ledger th {
 		text-align: left;
 		font-weight: 400;
 		font-size: 0.9rem;
 		line-height: 1.5;
-		border-right: 1px solid var(--deadline);
 	}
 	.ledger th a {
 		color: var(--text);
@@ -222,12 +198,11 @@ const entries = [
 	.start {
 		display: inline-block;
 		padding: 0.7rem 1.5rem;
-		border-radius: 4px;
+		border-radius: 6px;
 		background: var(--accent);
 		color: var(--on-accent);
 		font-weight: 700;
 		text-decoration: none;
-		box-shadow: 3px 3px 0 var(--deadline);
 	}
 	.start:hover {
 		background: var(--accent-strong);
@@ -245,48 +220,39 @@ const entries = [
 	.body .entry-sec {
 		margin-top: 0;
 	}
-	/* セクション見出しは黄のマーカー */
+	/* セクション見出しは大きく太く、下に細罫 */
 	.sec {
-		display: inline-block;
-		font-size: 1.25rem;
-		margin: 0 0 1rem;
-		padding: 0 0.3rem;
-		background: linear-gradient(transparent 58%, var(--marker) 58%);
+		font-size: 1.35rem;
+		margin: 0 0 1.25rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid var(--line);
 	}
-	/* 連載は付箋（色は固定。ダークでも付箋は明るいまま、文字は墨） */
+	/* 連載：罫だけの3列。色面・影・傾きなし */
 	.parts {
 		list-style: none;
 		padding: 0;
 		margin: 0 0 1rem;
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
-		gap: 1rem;
+		gap: 0;
 	}
 	@media (min-width: 720px) {
 		.parts {
 			grid-template-columns: repeat(3, minmax(0, 1fr));
+			gap: 0 2rem;
 		}
 	}
 	.parts li {
-		background: #ffd166;
-		color: #1b1b1b;
-		padding: 0.9rem 1rem;
-		box-shadow: 0 3px 6px rgb(0 0 0 / 0.14);
-		transform: rotate(var(--r));
-	}
-	.parts li:nth-child(3n + 2) {
-		background: #cfe6dc;
-	}
-	.parts li:nth-child(3n) {
-		background: #ffc4b5;
+		padding: 1rem 0;
+		border-bottom: 1px solid var(--line);
 	}
 	.parts a {
 		text-decoration: none;
-		color: #1b1b1b;
+		color: var(--text);
 		font-weight: 700;
 	}
 	.parts .no {
-		color: #0a4438;
+		color: var(--accent);
 		margin-right: 0.5rem;
 		font-size: 0.85rem;
 	}
@@ -294,7 +260,7 @@ const entries = [
 		margin: 0.3rem 0 0;
 		font-size: 0.875rem;
 		line-height: 1.65;
-		color: #3a3732;
+		color: var(--muted);
 	}
 	.about {
 		max-width: 560px;

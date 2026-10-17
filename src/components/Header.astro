@@ -34,9 +34,8 @@ const path = Astro.url.pathname;
 
 <style>
 	.site-header {
-		border-top: 4px solid var(--accent);
 		border-bottom: 1px solid var(--line);
-		background: var(--card);
+		background: var(--bg);
 	}
 	.inner {
 		max-width: var(--wide);
@@ -57,6 +56,11 @@ const path = Astro.url.pathname;
 	}
 	.gauge {
 		text-decoration: none;
+	}
+	@media (max-width: 699px) {
+		.gauge {
+			display: none;
+		}
 	}
 	.site-title {
 		font-weight: 700;
@@ -87,10 +91,11 @@ const path = Astro.url.pathname;
 		text-decoration: none;
 		padding: 0.25rem 0;
 		border-bottom: 2px solid transparent;
+		font-weight: 500;
 	}
 	nav a:hover,
 	nav a.active {
 		color: var(--text);
-		border-bottom-color: var(--deadline);
+		border-bottom-color: var(--accent);
 	}
 </style>

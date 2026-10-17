@@ -1,20 +1,42 @@
 ---
 // ASP が出すバナーの HTML をそのまま差し込む（.mdx の記事・サイドバー用）
+// 上に「PR」ラベルを自動で付ける。caption は任意（通常は使わない）
 interface Props {
 	html: string;
+	caption?: string;
 }
-const { html } = Astro.props;
+const { html, caption } = Astro.props;
 ---
 
-<div class="aff-banner" set:html={html} />
+<div class="aff-banner">
+	<span class="pr-label">PR</span>
+	<div set:html={html} />
+	{caption && <p class="caption">{caption}</p>}
+</div>
 
 <style>
 	.aff-banner {
-		margin: 1rem 0;
+		margin: 1.5rem 0;
 		text-align: center;
+	}
+	.pr-label {
+		display: inline-block;
+		margin-bottom: 0.3rem;
+		font-weight: 700;
+		font-size: 0.75rem;
+		border: 1px solid var(--muted);
+		border-radius: 3px;
+		padding: 0 0.3rem;
+		letter-spacing: 0.05em;
+		color: var(--muted);
 	}
 	.aff-banner :global(img) {
 		max-width: 100%;
 		height: auto;
+	}
+	.caption {
+		margin: 0.3rem 0 0;
+		font-size: 0.8rem;
+		color: var(--muted);
 	}
 </style>

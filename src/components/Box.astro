@@ -18,40 +18,28 @@ const icon = { point: '✓', caution: '!', memo: '✎' }[kind];
 	.box {
 		position: relative;
 		margin: 2rem 0 1.75rem;
-		padding: 0.9rem 1.1rem 1rem;
+		padding: 1rem 1.2rem 1.05rem;
+		border-radius: 0 6px 6px 0;
 		background: var(--bgc);
 		color: var(--text);
-		box-shadow: 1px 3px 6px rgb(0 0 0 / 0.1);
 	}
 	.point {
 		--c: var(--accent);
-		--on-c: var(--on-accent);
+		--on-c: var(--bg);
 		--bgc: var(--accent-soft);
-		border-left: 6px double var(--accent);
+		border-left: 3px solid var(--accent);
 	}
 	.caution {
 		--c: var(--warn);
-		--on-c: var(--on-deadline);
+		--on-c: var(--bg);
 		--bgc: var(--warn-soft);
-		border-top: 6px solid var(--warn);
+		border-left: 3px solid var(--warn);
 	}
 	.memo {
 		--c: var(--memo);
-		--on-c: #1b1b1b;
+		--on-c: var(--bg);
 		--bgc: var(--memo-soft);
-	}
-	/* 黄色の付箋はテープで留める */
-	.memo::before {
-		content: '';
-		position: absolute;
-		top: -10px;
-		left: 50%;
-		width: 84px;
-		height: 20px;
-		margin-left: -42px;
-		background: var(--memo);
-		opacity: 0.8;
-		transform: rotate(-2deg);
+		border-left: 3px solid var(--memo);
 	}
 	.box-title {
 		margin: 0 0 0.5rem !important;

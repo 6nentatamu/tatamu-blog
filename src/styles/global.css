@@ -2,32 +2,38 @@
    editorial/デザイン基準.md の「配色と世界観」を参照。 */
 
 :root {
-	/* 紙 #fff6e9・墨 #1b1b1b・主色 深緑 #0f5c4d・差し色 珊瑚 #ff6b4a・付箋/マーカー 黄 #ffd166 */
-	--bg: #fff6e9;
-	--grid: rgb(15 92 77 / 0.075);
-	--text: #1b1b1b;
-	--muted: #5f5a52;
-	--line: #e6d9c3;
-	--rule: #c9ddd6;
-	--subtle: #f7ead6;
-	--card: #fffdf8;
+	/* 方針：白地・深緑1色・見出しは文字の大小と細線だけ。珊瑚は「今年／締切」の1点にだけ使う */
+	--bg: #ffffff;
+	--grid: transparent;
+	--text: #1c2421;
+	--muted: #59645f;
+	--line: #e2e8e5;
+	--rule: #e2e8e5;
+	--subtle: #f5f8f7;
+	--card: #ffffff;
 	--accent: #0f5c4d;
 	--on-accent: #fff;
 	--link: #0f5c4d;
-	--accent-soft: #dcebe5;
+	--accent-soft: #eef5f2;
 	--accent-strong: #0a4438;
-	/* 珊瑚：--deadline は塗り（上の文字は墨 --on-deadline）、文字に使うときは濃い --deadline-ink */
 	--deadline: #ff6b4a;
 	--on-deadline: #1b1b1b;
 	--deadline-ink: #b93216;
-	--deadline-soft: #ffe3da;
-	--warn: #ff6b4a;
-	--warn-soft: #ffeae3;
-	--memo: #ffd166;
-	--memo-soft: #ffeeb8;
-	--marker: #ffe08a;
-	--page: #f7ead6;
+	--deadline-soft: #fff0eb;
+	--aff-bg: #ffffff;
+	--aff-ink: #1c2421;
+	--aff-line: #0f5c4d;
+	--aff-tab: #0f5c4d;
+	--on-aff-tab: #ffffff;
+	--aff-hover: #eef5f2;
+	--warn: #b93216;
+	--warn-soft: #fff4f0;
+	--memo: #a8741a;
+	--memo-soft: #faf6ec;
+	--marker: transparent;
+	--page: #f5f8f7;
 	--mincho: 'Zen Old Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+	--sans: 'Noto Sans JP', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI', 'Yu Gothic', Meiryo, sans-serif;
 	--measure: 720px;
 	--wide: 1080px;
 	color-scheme: light;
@@ -35,29 +41,33 @@
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--bg: #121c19;
-		--grid: rgb(255 246 233 / 0.04);
-		--text: #f3ecdf;
-		--muted: #a9b3ad;
-		--line: #2c3b36;
-		--rule: #2a3a35;
-		--subtle: #1a2622;
-		--card: #18231f;
-		--accent: #49b59c;
-		--on-accent: #0d1b17;
-		--link: #74d1ba;
-		--accent-soft: #1c332d;
-		--accent-strong: #74d1ba;
-		--deadline: #ff6b4a;
+		--bg: #0f1614;
+		--text: #e9efec;
+		--muted: #a2afa9;
+		--line: #26332f;
+		--rule: #26332f;
+		--subtle: #16201d;
+		--card: #0f1614;
+		--accent: #4fb89f;
+		--on-accent: #0b1512;
+		--link: #7dd6c0;
+		--accent-soft: #15251f;
+		--accent-strong: #7dd6c0;
+		--deadline: #ff7a5c;
 		--on-deadline: #1b1b1b;
-		--deadline-ink: #ff8f74;
-		--deadline-soft: #3b231c;
-		--warn: #ff6b4a;
-		--warn-soft: #33211c;
-		--memo: #ffd166;
-		--memo-soft: #332b14;
-		--marker: rgb(255 209 102 / 0.3);
-		--page: #1a2622;
+		--deadline-ink: #ff9a82;
+		--deadline-soft: #2c1c17;
+		--aff-bg: #0f1614;
+		--aff-ink: #e9efec;
+		--aff-line: #4fb89f;
+		--aff-tab: #4fb89f;
+		--on-aff-tab: #0b1512;
+		--aff-hover: #15251f;
+		--warn: #ff9a82;
+		--warn-soft: #2a1b17;
+		--memo: #e0b25a;
+		--memo-soft: #25200f;
+		--page: #16201d;
 		color-scheme: dark;
 	}
 }
@@ -74,22 +84,16 @@ html {
 
 body {
 	margin: 0;
-	/* ページ地は薄い方眼。本文は .sheet（無地の紙）に載せる */
 	background-color: var(--bg);
-	background-image:
-		linear-gradient(var(--grid) 1px, transparent 1px),
-		linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-	background-size: 20px 20px;
 	color: var(--text);
-	font-family:
-		'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Yu Gothic UI', 'Yu Gothic', Meiryo,
-		sans-serif;
+	font-family: var(--sans);
 	font-size: 17px;
-	line-height: 1.85;
-	letter-spacing: 0.02em;
+	line-height: 1.95;
+	letter-spacing: 0.03em;
 	word-break: normal;
 	overflow-wrap: anywhere;
 	font-variant-numeric: tabular-nums;
+	-webkit-font-smoothing: antialiased;
 }
 
 /* 明朝はロゴと h1 だけ */
@@ -108,6 +112,8 @@ h1,
 h2,
 h3,
 h4 {
+	text-wrap: balance;
+	word-break: auto-phrase;
 	line-height: 1.45;
 	letter-spacing: 0.01em;
 }
@@ -123,28 +129,18 @@ h1 {
 	padding: 1.5rem 1rem;
 }
 
-/* 無地の紙（記事の本文・固定ページ）。方眼の上に1枚置く */
+/* 記事・固定ページの本文。枠も影もなし、白地にそのまま載せる */
 .sheet,
 main.container.prose {
-	background: var(--card);
-	border: 1px solid var(--line);
-	border-radius: 3px;
-	box-shadow:
-		0 1px 0 var(--line),
-		0 8px 20px rgb(0 0 0 / 0.05);
-	padding: 1.25rem 0.9rem 1.75rem;
+	padding: 1.25rem 1rem 1.75rem;
 }
 main.container.prose {
-	width: calc(100% - 1rem);
-	margin-top: 1.25rem;
+	margin-top: 1rem;
 }
 @media (min-width: 700px) {
 	.sheet,
 	main.container.prose {
-		padding: 2rem 2.25rem 2.5rem;
-	}
-	main.container.prose {
-		margin-top: 2rem;
+		padding: 1.5rem 0 2.5rem;
 	}
 }
 
@@ -164,7 +160,7 @@ main.container.prose {
 	width: 15px;
 	height: 17px;
 	margin-left: -1px;
-	border: 1px solid var(--muted);
+	border: 1px solid var(--line);
 	font-style: normal;
 	font-size: 10px;
 	font-weight: 700;
@@ -174,52 +170,47 @@ main.container.prose {
 	background: var(--card);
 }
 .yr-cells i.done {
-	background: var(--text);
-	border-color: var(--text);
-	color: var(--bg);
+	background: var(--accent);
+	border-color: var(--accent);
+	color: var(--on-accent);
 }
 .yr-cells i.now {
 	background: var(--now);
-	border-color: var(--text);
+	border-color: var(--now);
 	color: var(--on-now);
 	position: relative;
 }
 
-/* 記事・固定ページの本文 */
-/* h2：深緑の帯＋左に珊瑚の見出しタブ。h3：下線の短い色線で h2 と見分ける */
+/* 見出し：h2＝大きく太く、下に細い罫（短い深緑の線つき）。h3＝深緑の太字のみ。帯・影・タブは使わない */
 .prose h2 {
-	font-size: 1.3rem;
-	margin: 3rem 0 1.25rem;
-	padding: 0.55rem 0.9rem;
-	background: var(--accent);
-	color: var(--on-accent);
-	border-left: 8px solid var(--deadline);
-	border-radius: 2px;
-	scroll-margin-top: 1rem;
-}
-
-.prose h3 {
-	font-size: 1.12rem;
-	margin: 2.2rem 0 0.8rem;
-	padding-bottom: 0.25rem;
-	border-bottom: 2px solid var(--line);
+	font-size: 1.45rem;
+	line-height: 1.5;
+	margin: 3.5rem 0 1.4rem;
+	padding: 0 0 0.6rem;
+	border-bottom: 1px solid var(--line);
 	position: relative;
+	color: var(--text);
 	scroll-margin-top: 1rem;
 }
-
-.prose h3::after {
+.prose h2::after {
 	content: '';
 	position: absolute;
 	left: 0;
-	bottom: -2px;
-	width: 3em;
-	height: 2px;
-	background: var(--deadline);
+	bottom: -1px;
+	width: 3rem;
+	height: 3px;
+	background: var(--accent);
+}
+
+.prose h3 {
+	font-size: 1.15rem;
+	margin: 2.4rem 0 0.7rem;
+	color: var(--accent-strong);
+	scroll-margin-top: 1rem;
 }
 
 .prose strong {
-	/* 黄のマーカー */
-	background: linear-gradient(transparent 62%, var(--marker) 62%);
+	font-weight: 700;
 }
 
 .prose p,
@@ -235,8 +226,7 @@ main.container.prose {
 .prose blockquote {
 	margin: 1.5rem 0;
 	padding: 0.5rem 1rem;
-	border-left: 4px solid var(--accent);
-	background: var(--subtle);
+	border-left: 3px solid var(--line);
 	color: var(--muted);
 }
 
@@ -244,32 +234,39 @@ main.container.prose {
 	margin-bottom: 0;
 }
 
-/* 表はスマホで横スクロール */
+/* 表：横罫だけ。見出し行は太字＋下線2px。スマホは横スクロール */
 .prose table {
 	display: block;
 	max-width: 100%;
 	overflow-x: auto;
 	border-collapse: collapse;
-	margin: 0 0 1.5rem;
-	font-size: 0.92rem;
-	line-height: 1.6;
+	margin: 0 0 1.75rem;
+	font-size: 0.93rem;
+	line-height: 1.65;
 	-webkit-overflow-scrolling: touch;
 }
 
 .prose th,
 .prose td {
-	border: 1px solid var(--line);
-	padding: 0.5rem 0.75rem;
+	border: none;
+	border-bottom: 1px solid var(--line);
+	padding: 0.65rem 0.9rem 0.65rem 0;
 	text-align: left;
 	vertical-align: top;
 	min-width: 6em;
-	/* 数字と単位（50,000円）を途中で折らない。表は横スクロールする */
 	overflow-wrap: normal;
 }
 
 .prose th {
-	background: var(--accent-soft);
+	font-weight: 700;
 	white-space: nowrap;
+	border-bottom: 2px solid var(--text);
+	font-size: 0.88rem;
+	color: var(--muted);
+}
+
+.prose td:first-child {
+	font-weight: 500;
 }
 
 .prose code {
