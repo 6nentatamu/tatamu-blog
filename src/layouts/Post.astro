@@ -37,7 +37,7 @@ const image = ogPath(post);
 	<div class="post-layout">
 		<main class="prose">
 			<article class="sheet">
-				<p class="post-meta">
+				<p class="post-meta" style={`--cat: var(--c-${category})`}>
 					<a class="part" href={`/category/${category}/`}>{partLabel(category)}</a>
 					<span>{readingMinutes(post)}分で読めます</span>
 				</p>
@@ -54,7 +54,7 @@ const image = ogPath(post);
 				{
 					summary && (
 						<section class="summary" aria-label="この記事の結論">
-							<p class="summary-title">この記事の結論</p>
+							<p class="summary-title"><span>CONCLUSION</span>この記事の結論</p>
 							<p class="summary-body">{summary}</p>
 						</section>
 					)
@@ -134,10 +134,13 @@ const image = ogPath(post);
 		margin: 0 0 0.5rem;
 	}
 	.post-meta .part {
-		color: var(--accent);
+		color: var(--cat, var(--accent));
 		font-weight: 700;
 		letter-spacing: 0.06em;
 		text-decoration: none;
+		border: 1px solid var(--cat, var(--accent));
+		border-radius: 999px;
+		padding: 0 0.7rem;
 	}
 	/* 6年の年表の小型版（マスは global.css の .yr-cells） */
 	.year-badge {
@@ -147,9 +150,15 @@ const image = ogPath(post);
 		gap: 0.2rem 0.6rem;
 		margin: -0.5rem 0 2rem;
 		padding: 0 0 1.1rem;
-		font-size: 0.82rem;
+		font-size: 0.88rem;
 		color: var(--muted);
 		border-bottom: 1px solid var(--line);
+	}
+	.year-badge :global(.yr-cells i) {
+		width: 24px;
+		height: 26px;
+		font-size: 12px;
+		line-height: 24px;
 	}
 	.year-badge b {
 		color: var(--deadline-ink);
@@ -171,16 +180,26 @@ const image = ogPath(post);
 		background: var(--accent-soft);
 	}
 	.summary-title {
-		margin: 0 0 0.3rem;
-		font-size: 0.78rem;
-		letter-spacing: 0.1em;
+		display: flex;
+		align-items: baseline;
+		gap: 0.7rem;
+		margin: 0 0 0.45rem;
+		font-size: 0.82rem;
+		letter-spacing: 0.08em;
 		color: var(--accent-strong);
 		font-weight: 700;
+	}
+	.summary-title span {
+		font-family: var(--mincho);
+		font-size: 0.95rem;
+		letter-spacing: 0.18em;
+		opacity: 0.8;
 	}
 	.summary-body {
 		margin: 0;
 		font-weight: 500;
-		line-height: 1.85;
+		font-size: 1.05rem;
+		line-height: 1.9;
 		white-space: pre-line;
 	}
 	.tags {

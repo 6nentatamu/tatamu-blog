@@ -34,6 +34,12 @@
 	--page: #f5f8f7;
 	--mincho: 'Zen Old Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
 	--sans: 'Noto Sans JP', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI', 'Yu Gothic', Meiryo, sans-serif;
+	--c-prequel: #5f6f68;
+	--c-concept: #2a6f97;
+	--c-design: #6a4c93;
+	--c-setup: #0f5c4d;
+	--c-operation: #9a6a12;
+	--c-monthly: #1f7a8c;
 	--measure: 720px;
 	--wide: 1080px;
 	color-scheme: light;
@@ -68,6 +74,12 @@
 		--memo: #e0b25a;
 		--memo-soft: #25200f;
 		--page: #16201d;
+		--c-prequel: #a9b8b1;
+		--c-concept: #7fc0e6;
+		--c-design: #c3a6ee;
+		--c-setup: #4fb89f;
+		--c-operation: #e0b25a;
+		--c-monthly: #6fd0e0;
 		color-scheme: dark;
 	}
 }
@@ -182,6 +194,21 @@ main.container.prose {
 }
 
 /* 見出し：h2＝大きく太く、下に細い罫（短い深緑の線つき）。h3＝深緑の太字のみ。帯・影・タブは使わない */
+.sheet {
+	counter-reset: sec;
+}
+.sheet h2 {
+	counter-increment: sec;
+}
+.sheet h2::before {
+	content: counter(sec, decimal-leading-zero);
+	display: block;
+	margin-bottom: 0.15rem;
+	font-family: var(--mincho);
+	font-size: 0.95rem;
+	letter-spacing: 0.15em;
+	color: var(--accent);
+}
 .prose h2 {
 	font-size: 1.45rem;
 	line-height: 1.5;
@@ -224,10 +251,23 @@ main.container.prose {
 }
 
 .prose blockquote {
-	margin: 1.5rem 0;
-	padding: 0.5rem 1rem;
+	position: relative;
+	margin: 1.75rem 0;
+	padding: 0.5rem 1rem 0.5rem 2.6rem;
 	border-left: 3px solid var(--line);
 	color: var(--muted);
+}
+
+.prose blockquote::before {
+	content: '\201C';
+	position: absolute;
+	left: 0.6rem;
+	top: -0.2rem;
+	font-family: var(--mincho);
+	font-size: 2.6rem;
+	line-height: 1;
+	color: var(--accent);
+	opacity: 0.55;
 }
 
 .prose blockquote p:last-child {

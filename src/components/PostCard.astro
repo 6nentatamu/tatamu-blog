@@ -11,7 +11,7 @@ interface Props {
 const { post, compact = false } = Astro.props;
 ---
 
-<article class:list={['card', { compact }]}>
+<article class:list={['card', { compact }]} style={`--cat: var(--c-${post.data.category})`}>
 	<a href={`/posts/${post.id}/`} class="thumb" tabindex="-1" aria-hidden="true">
 		<img src={ogPath(post)} alt="" width="1200" height="630" loading="lazy" decoding="async" />
 	</a>
@@ -47,7 +47,17 @@ const { post, compact = false } = Astro.props;
 		font-size: 0.75rem;
 		font-weight: 700;
 		letter-spacing: 0.06em;
-		color: var(--accent);
+		color: var(--cat, var(--accent));
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+	}
+	.part::before {
+		content: '';
+		width: 14px;
+		height: 3px;
+		border-radius: 2px;
+		background: var(--cat, var(--accent));
 	}
 	h3 {
 		font-size: 1rem;

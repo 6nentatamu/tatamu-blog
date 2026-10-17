@@ -137,6 +137,19 @@ const entries = [
 		position: relative;
 		min-width: 0;
 	}
+	/* 大きな「6」の透かし。6年の目盛りを入口の絵にする */
+	.page::before {
+		content: '6';
+		position: absolute;
+		right: -0.5rem;
+		top: -2.2rem;
+		z-index: -1;
+		font-family: var(--mincho);
+		font-size: 15rem;
+		line-height: 1;
+		color: var(--accent-soft);
+		pointer-events: none;
+	}
 	.eyebrow {
 		margin: 0 0 0.6rem;
 		font-size: 0.85rem;
