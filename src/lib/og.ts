@@ -1,50 +1,13 @@
 // 記事ごとのアイキャッチ（1200x630）。SVG を組み立てて sharp で PNG にする。
-// 配色＝案2（深緑×珊瑚）、方向性＝C（手帳・記録ノート）。右は方眼の紙、左は部ごとの色の帯。
-// 左帯に6年の目盛りと「○年目」。部ごとに帯の色とモチーフを変える。前日譚は「今年」の珊瑚を使わない。
-// keyNumber があれば右下に集計表の1行として大きく出す。
+// 2026-10-18 専門家会議（アートディレクター・SNS運用・文字組み・ブランド）と実例確認で決めた形：
+// 白地＋左の深緑の細い帯だけ。タイトルを太いゴシックで主役にし、強弱は文字の大きさで付ける。
+// 方眼・左の太帯・6マスの目盛り・珊瑚の縦線・明朝・数字の枠はやめた（縮小時に埋もれるため）。
 import sharp from 'sharp';
 
 const FONT = "'Yu Gothic UI','Yu Gothic','Meiryo','Hiragino Sans','Noto Sans JP',sans-serif";
-// Zen Old Mincho はビルド環境（Windows の sharp/librsvg）に無いので、システムの游明朝を使う
-const MINCHO = "'Zen Old Mincho','Yu Mincho','YuMincho','Hiragino Mincho ProN','Noto Serif JP',serif";
-const PAPER = '#fff6e9';
-const INK = '#1b1b1b';
+const INK = '#1c2421';
+const MUTED = '#59645f';
 const GREEN = '#0f5c4d';
-const CORAL = '#ff6b4a';
-const YELLOW = '#ffd166';
-
-// 部ごとの帯色とモチーフ。色は案2の色相（深緑を軸に、青緑・墨緑・黄・墨）で分ける。
-// fg＝帯の上の文字色、num＝紙の上に出す数字の色
-type Theme = { color: string; fg: string; num: string; motif: 'dots' | 'lines' | 'grid' | 'steps' | 'rings' | 'ticks' };
-const THEME: Record<string, Theme> = {
-	prequel: { color: '#4f6f67', fg: '#fff', num: '#3d5952', motif: 'dots' },
-	concept: { color: GREEN, fg: '#fff', num: GREEN, motif: 'lines' },
-	design: { color: '#17697a', fg: '#fff', num: '#125563', motif: 'grid' },
-	setup: { color: '#0a3d33', fg: '#fff', num: '#0a3d33', motif: 'steps' },
-	operation: { color: YELLOW, fg: INK, num: '#7a5600', motif: 'rings' },
-	monthly: { color: INK, fg: '#fff', num: GREEN, motif: 'ticks' },
-};
-
-function motifSvg(m: string, fg: string) {
-	const out: string[] = [];
-	const o = `stroke="${fg}" stroke-opacity=".14" fill="none"`;
-	if (m === 'dots') for (let x = 0; x < 6; x++) for (let y = 0; y < 4; y++) out.push(`<circle cx="${36 + x * 38}" cy="${440 + y * 38}" r="4" fill="${fg}" fill-opacity=".16"/>`);
-	if (m === 'lines') for (let i = 0; i < 9; i++) out.push(`<line x1="${-40 + i * 40}" y1="630" x2="${120 + i * 40}" y2="420" ${o} stroke-width="2"/>`);
-	if (m === 'grid') for (let i = 0; i < 7; i++) out.push(`<line x1="${20 + i * 38}" y1="420" x2="${20 + i * 38}" y2="610" ${o} stroke-width="2"/><line x1="0" y1="${420 + i * 32}" x2="260" y2="${420 + i * 32}" ${o} stroke-width="2"/>`);
-	if (m === 'steps') out.push(`<path d="M0 610 h50 v-40 h50 v-40 h50 v-40 h50 v-40 h60" ${o} stroke-width="4"/>`);
-	if (m === 'rings') for (let i = 1; i < 6; i++) out.push(`<circle cx="130" cy="560" r="${i * 26}" ${o} stroke-width="2"/>`);
-	if (m === 'ticks') for (let i = 0; i < 12; i++) out.push(`<line x1="${22 + i * 19}" y1="${i % 3 === 0 ? 560 : 580}" x2="${22 + i * 19}" y2="610" ${o} stroke-width="3"/>`);
-	return out.join('');
-}
-
-// 紙の方眼（右側の地）
-function gridSvg() {
-	const out: string[] = [];
-	const o = `stroke="${GREEN}" stroke-opacity=".08" stroke-width="1"`;
-	for (let x = 280; x < 1200; x += 30) out.push(`<line x1="${x}" y1="0" x2="${x}" y2="630" ${o}/>`);
-	for (let y = 15; y < 630; y += 30) out.push(`<line x1="260" y1="${y}" x2="1200" y2="${y}" ${o}/>`);
-	return out.join('');
-}
 
 export type OgOpts = {
 	title: string;
@@ -61,88 +24,106 @@ function esc(s: string) {
 
 // 数字＋単位（1.86万円、68,590円、1年6か月 など）や英単語を1語として扱う
 const TOKEN = /[0-9０-９][0-9０-９,，.．]*(?:(?:[万千百億]?円|万|億|か月|ヶ月|カ月|年|月|日|時間|分|歳|%|％|人|回|件|割|倍|部|号|第)[0-9０-９,，.．]*)*|[A-Za-z]+|[\s\S]/gu;
-const NO_HEAD = '、。，．・：；）」』！？ー…%％';
+const NO_HEAD = '、。，．・：；）」』！？ー…%％ぁぃぅぇぉっゃゅょァィゥェォッャュョ';
+const PARTICLE = 'はをでにがのともへや';
 const cw = (ch: string) => (/[A-Z]/.test(ch) ? 0.7 : /[ -~]/.test(ch) ? 0.55 : 1);
+const width = (s: string) => [...s].reduce((a, c) => a + cw(c), 0);
+const isHira = (c: string) => /[ぁ-ゖ]/.test(c);
 
-// 全角を1、半角を0.55として幅を数え、max を超えたら語の前で折り返す。行頭に句読点を置かない。
-function wrap(text: string, max: number): string[] {
-	const tokens = text.match(TOKEN) ?? [];
-	const lines: string[] = [];
-	let cur = '';
-	let w = 0;
-	for (const t of tokens) {
-		const tw = [...t].reduce((a, c) => a + cw(c), 0);
-		if (w + tw > max && cur && !NO_HEAD.includes(t[0])) {
-			lines.push(cur);
-			cur = '';
-			w = 0;
-		}
-		cur += t;
-		w += tw;
-	}
-	if (cur) lines.push(cur);
-	return lines;
+// t の直後で切るときの良さ（小さいほど良い）。助詞の後・句読点の後・ひらがな→漢字/カタカナの境目を好む
+function breakCost(t: string, next?: string) {
+	if (!next || NO_HEAD.includes(next[0])) return Infinity;
+	const last = t[t.length - 1];
+	if ('、？！）」 '.includes(last)) return 0;
+	if (next[0] === ' ') return Infinity;
+	if (PARTICLE.includes(last)) return isHira(next[0]) ? 2 : 0;
+	if (isHira(last) && !isHira(next[0])) return 1;
+	if (/[ァ-ヶー]/.test(last) && /[ァ-ヶー]/.test(next[0])) return Infinity;
+	if (!isHira(last) && !isHira(next[0])) return 5;
+	return Infinity;
 }
 
-// タイトルの「：」で区切れるなら、そこで改行する
-function titleLines(title: string, max = 17): string[] {
-	const parts = title.split(/(?<=[：:、？])/);
-	return parts.flatMap((p) => wrap(p, max));
+// 1区切りを n 行に分け、行の長さをそろえる。最終行が3字未満にならないようにする
+function balance(text: string, max: number): string[] {
+	const tokens = text.match(TOKEN) ?? [];
+	const total = width(text);
+	if (total <= max) return [text];
+	for (let n = Math.ceil(total / max); n <= 4; n++) {
+		const target = total / n;
+		// 動的計画法：dp[i][k] = tokens[0..i) を k 行にしたときの最小コスト
+		const N = tokens.length;
+		const pre = [0];
+		for (const t of tokens) pre.push(pre[pre.length - 1] + width(t));
+		const dp = Array.from({ length: N + 1 }, () => Array(n + 1).fill(Infinity));
+		const back = Array.from({ length: N + 1 }, () => Array(n + 1).fill(-1));
+		dp[0][0] = 0;
+		for (let i = 1; i <= N; i++)
+			for (let k = 1; k <= n; k++)
+				for (let j = k - 1; j < i; j++) {
+					if (dp[j][k - 1] === Infinity) continue;
+					const w = pre[i] - pre[j];
+					if (w > max || w < 3) continue;
+					const bc = i === N ? 0 : breakCost(tokens[i - 1], tokens[i]);
+					if (bc === Infinity) continue;
+					const c = dp[j][k - 1] + (w - target) ** 2 + bc * 4;
+					if (c < dp[i][k]) {
+						dp[i][k] = c;
+						back[i][k] = j;
+					}
+				}
+		if (dp[N][n] === Infinity) continue;
+		const lines: string[] = [];
+		let i = N;
+		for (let k = n; k > 0; k--) {
+			const j = back[i][k];
+			lines.unshift(tokens.slice(j, i).join(''));
+			i = j;
+		}
+		return lines;
+	}
+	return [text];
+}
+
+// 「：」「？」で必ず改行し（記号は前の行に残す）、それぞれを行の長さをそろえて折り返す
+export function titleLines(title: string, max = 15): string[] {
+	return title.split(/(?<=[：:？?])/).flatMap((p) => balance(p.trim(), max));
 }
 
 export function ogSvg(opts: OgOpts) {
-	const theme = THEME[opts.categoryId] ?? THEME.concept;
-	const calm = opts.categoryId === 'prequel';
-	const fg = theme.fg;
 	const kn = opts.keyNumber;
-	const maxLines = kn ? 3 : 4;
-	const lines = titleLines(opts.title, 15).slice(0, maxLines);
-	const size = lines.length >= 3 ? 50 : 56;
-	const lh = size * 1.4;
-	const titleTop = 205 + size;
+	const prequel = opts.categoryId === 'prequel';
+	let lines = titleLines(opts.title, 15);
+	let size = 68;
+	if (lines.length > 3) {
+		lines = titleLines(opts.title, 17);
+		size = 60;
+	}
+	if (lines.length === 3) size = Math.min(size, kn ? 58 : 64);
+	const lh = Math.round(size * 1.35);
+	const blockH = lh * (lines.length - 1) + size;
+	// 数字があるときはタイトルを上に寄せ、ないときは上下の中央に置く
+	const top = kn ? (lines.length === 3 ? 140 : 175) : 150 + (400 - blockH) / 2;
 	const label = opts.partNo !== undefined ? `第${opts.partNo}部　${opts.part}` : opts.part;
-	const labelW = [...label].length * 28 + 44;
-	// 左帯の目盛り：6コマ（経過＝帯の文字色で塗り、今年＝珊瑚〔前日譚は使わない〕、残り＝線）
-	const outline = (x: number) =>
-		`<rect x="${x + 1.5}" y="231.5" width="21" height="67" fill="none" stroke="${fg}" stroke-opacity=".6" stroke-width="3"/>`;
-	const cells = Array.from({ length: 6 }, (_, i) => {
-		const y = i + 1;
-		const x = 38 + i * 32;
-		if (calm) return outline(x);
-		if (y < opts.year) return `<rect x="${x}" y="230" width="24" height="70" fill="${fg}"/>`;
-		if (y === opts.year) return `<rect x="${x}" y="230" width="24" height="70" fill="${CORAL}" stroke="${fg}" stroke-width="2"/>`;
-		return outline(x);
-	}).join('');
-	// 数字は集計表の1行（上に深緑の二重線、下に罫線）
-	const knSvg = kn
-		? `<rect x="310" y="462" width="830" height="126" fill="#fffdf8"/>
-<line x1="310" y1="462" x2="1140" y2="462" stroke="${GREEN}" stroke-width="4"/>
-<line x1="310" y1="588" x2="1140" y2="588" stroke="${GREEN}" stroke-opacity=".35" stroke-width="2"/>
-<line x1="322" y1="462" x2="322" y2="588" stroke="${CORAL}" stroke-width="2"/>
-<text x="340" y="503" font-family="${FONT}" font-size="26" fill="#5f5a52">${esc(kn.label)}</text>
-<text x="340" y="568" font-family="${FONT}" font-size="${[...kn.value].length > 12 ? 50 : 62}" font-weight="700" fill="${theme.num}">${esc(kn.value)}</text>`
-		: '';
+	const yearText = prequel ? '設立前' : `${opts.year}年目`;
+	const knValueSize = [...(kn?.value ?? '')].length > 9 ? 72 : 88;
 	return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-<rect width="1200" height="630" fill="${PAPER}"/>
-${gridSvg()}
-<rect width="260" height="630" fill="${theme.color}"/>
-<rect x="260" width="8" height="630" fill="${CORAL}"/>
-${motifSvg(theme.motif, fg)}
-<text x="38" y="80" font-family="${MINCHO}" font-size="25" font-weight="700" fill="${fg}">6年でたたむ</text>
-<text x="38" y="114" font-family="${MINCHO}" font-size="25" font-weight="700" fill="${fg}">マイクロ法人</text>
-<rect x="194" y="44" width="58" height="54" rx="8" fill="#0f5c4d"/><svg x="198" y="50" width="50" height="42" viewBox="105 72 190 146"><polygon points="105,72 295,72 295,218 105,218" fill="#fffdf8"/><polygon points="105,72 295,72 295,96 105,96" fill="#e3d6bd"/><circle cx="158" cy="143" r="16" fill="#1b1b1b"/><circle cx="242" cy="143" r="16" fill="#1b1b1b"/><circle cx="126" cy="178" r="13" fill="#ff6b4a" opacity=".5"/><circle cx="274" cy="178" r="13" fill="#ff6b4a" opacity=".5"/><path d="M184 176 Q200 192 216 176" fill="none" stroke="#1b1b1b" stroke-width="6" stroke-linecap="round"/></svg>
-<text x="38" y="200" font-family="${FONT}" font-size="22" fill="${fg}" fill-opacity=".85">6年のうち</text>
-${cells}
-<text x="38" y="370" font-family="${FONT}" font-size="54" font-weight="700" fill="${fg}">${calm ? '設立前' : `${opts.year}<tspan font-size="30">年目</tspan>`}</text>
-<rect x="310" y="70" width="${labelW}" height="50" rx="4" fill="${theme.color}"/>
-<text x="${310 + labelW / 2}" y="105" text-anchor="middle" font-family="${FONT}" font-size="26" font-weight="700" fill="${fg}">${esc(label)}</text>
+<rect width="1200" height="630" fill="#ffffff"/>
+<rect width="16" height="630" fill="${GREEN}"/>
+<text x="80" y="104" font-family="${FONT}" font-size="30" font-weight="700" fill="${GREEN}">${esc(label)}<tspan dx="24" font-weight="400">${yearText}</tspan></text>
+<text x="1036" y="100" text-anchor="end" font-family="${FONT}" font-size="24" font-weight="700" fill="${MUTED}">6年でたたむマイクロ法人</text>
+<svg x="1052" y="58" width="68" height="58" viewBox="105 72 190 146"><polygon points="105,72 295,72 295,218 105,218" fill="#fffdf8" stroke="${GREEN}" stroke-width="8"/><polygon points="105,72 295,72 295,96 105,96" fill="${GREEN}"/><circle cx="158" cy="143" r="16" fill="#1b1b1b"/><circle cx="242" cy="143" r="16" fill="#1b1b1b"/><circle cx="126" cy="178" r="13" fill="#ff6b4a" opacity=".5"/><circle cx="274" cy="178" r="13" fill="#ff6b4a" opacity=".5"/><path d="M184 176 Q200 192 216 176" fill="none" stroke="#1b1b1b" stroke-width="6" stroke-linecap="round"/></svg>
 ${lines
 	.map(
 		(l, i) =>
-			`<text x="310" y="${titleTop + i * lh - (kn ? 30 : 0)}" font-family="${MINCHO}" font-size="${size}" font-weight="700" fill="${INK}">${esc(l)}</text>`,
+			`<text x="80" y="${top + size + i * lh}" font-family="${FONT}" font-size="${size}" font-weight="700" letter-spacing="-1" fill="${INK}">${esc(l)}</text>`,
 	)
 	.join('\n')}
-${knSvg}
+${
+	kn
+		? `<text x="80" y="488" font-family="${FONT}" font-size="26" fill="${MUTED}">${esc(kn.label)}</text>
+<text x="76" y="${488 + 18 + knValueSize}" font-family="${FONT}" font-size="${knValueSize}" font-weight="700" fill="${GREEN}">${esc(kn.value)}</text>`
+		: ''
+}
 </svg>`;
 }
 
