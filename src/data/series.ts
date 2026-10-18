@@ -21,12 +21,12 @@ export const SERIES: Partial<Record<CategoryId, PlannedPost[]>> = {
 		{ title: 'いつ設立するか（創業支援を受けなかった理由）' },
 	],
 	setup: [
-		{ title: '設立の全手順と費用' },
+		{ title: '設立の全手順と費用', slug: 'setup-1-hiyou' },
 		{ title: '法人口座の審査対策' },
 		{ title: '本店をどこに置くか' },
 		{ title: '法人カードと証券口座' },
 		{ title: '法人口座と個人口座の組み合わせ方' },
-		{ title: '会計・給与ソフトの選び方' },
+		{ title: '会計・給与ソフトの選び方', slug: 'setup-2-kaikei' },
 		{ title: 'つまずいた点とやり直し' },
 	],
 	operation: [
