@@ -3,6 +3,8 @@
 	"name": "tatamu-blog",
 	"compatibility_date": "2026-10-09",
 	"assets": {
-		"directory": "./dist"
+		"directory": "./dist",
+		// 存在しないURLには dist/404.html を 404 で返す
+		"not_found_handling": "404-page"
 	}
 }
