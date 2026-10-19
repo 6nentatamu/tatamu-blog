@@ -23,7 +23,7 @@ export const SERIES: Partial<Record<CategoryId, PlannedPost[]>> = {
 	setup: [
 		{ title: '設立の全手順と費用', slug: 'setup-1-hiyou' },
 		{ title: '法人口座の審査対策' },
-		{ title: '本店をどこに置くか' },
+		{ title: '本店をどこに置くか', slug: 'setup-4-honten' },
 		{ title: '法人カードと証券口座' },
 		{ title: '法人口座と個人口座の組み合わせ方' },
 		{ title: '会計・給与ソフトの選び方', slug: 'setup-2-kaikei' },
