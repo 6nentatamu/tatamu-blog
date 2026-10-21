@@ -1,5 +1,5 @@
 ---
-// 記事一覧（アイキャッチつきカードのグリッド）
+// 記事一覧（文字だけのリスト）
 import type { CollectionEntry } from 'astro:content';
 import PostCard from './PostCard.astro';
 
@@ -17,19 +17,7 @@ const { posts, cols = 2 } = Astro.props;
 
 <style>
 	.grid {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr);
-		gap: 1.25rem;
-	}
-	@media (min-width: 600px) {
-		.grid {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-		}
-	}
-	@media (min-width: 900px) {
-		.c3 {
-			grid-template-columns: repeat(3, minmax(0, 1fr));
-		}
+		border-top: 1px solid var(--line);
 	}
 	.empty {
 		color: var(--muted);

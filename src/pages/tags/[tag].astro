@@ -16,7 +16,7 @@ const { tag, posts } = Astro.props;
 ---
 
 <Base title={`#${tag}`} description={`「${tag}」に関する記事の一覧`}>
-	<main class="container">
+	<main class="container prose">
 		<h1>#{tag}</h1>
 		<PostList posts={posts} />
 	</main>

@@ -171,26 +171,26 @@ const image = ogPath(post);
 		line-height: 1.5;
 		margin: 0.4rem 0 1.1rem;
 	}
-	/* 結論：白地に深緑の2px枠。文字は本文色のまま。h2（淡い面＋左線）とは枠で見分ける */
+	/* 結論：淡緑の面＋深緑の2px枠、本文は太字（2026-10-21 会議）。h2（淡い面＋左線）とは枠で見分ける */
 	.summary {
 		border: 2px solid var(--accent);
 		border-radius: 10px;
 		margin: 0 0 1.75rem;
-		padding: 1rem 1.3rem 1.1rem;
-		background: var(--bg);
+		padding: 1.1rem 1.3rem 1.2rem;
+		background: var(--accent-soft);
 		color: var(--text);
 	}
 	.summary-title {
 		margin: 0 0 0.4rem;
-		font-size: 0.85rem;
+		font-size: 1rem;
 		letter-spacing: 0.08em;
 		font-weight: 700;
 		color: var(--accent-strong);
 	}
 	.summary-body {
 		margin: 0;
-		font-weight: 500;
-		font-size: 1.05rem;
+		font-weight: 700;
+		font-size: 1.1rem;
 		line-height: 1.9;
 		white-space: pre-line;
 	}
