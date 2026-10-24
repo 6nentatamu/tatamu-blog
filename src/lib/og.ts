@@ -31,20 +31,20 @@ const width = (s: string) => [...s].reduce((a, c) => a + cw(c), 0);
 const isHira = (c: string) => /[ぁ-ゖ]/.test(c);
 
 // t の直後で切るときの良さ（小さいほど良い）。助詞の後・句読点の後・ひらがな→漢字/カタカナの境目を好む
-function breakCost(t: string, next?: string) {
+function breakCost(t: string, next?: string, noKanjiCut = false) {
 	if (!next || NO_HEAD.includes(next[0])) return Infinity;
 	const last = t[t.length - 1];
 	if ('、？！）」 '.includes(last)) return 0;
 	if (next[0] === ' ') return Infinity;
-	if (PARTICLE.includes(last)) return isHira(next[0]) ? 2 : 0;
+	if (PARTICLE.includes(last)) return isHira(next[0]) ? Infinity : 0; // 「でも｜らえる」のように語の途中で切らない
 	if (isHira(last) && !isHira(next[0])) return 1;
 	if (/[ァ-ヶー]/.test(last) && /[ァ-ヶー]/.test(next[0])) return Infinity;
-	if (!isHira(last) && !isHira(next[0])) return 5;
+	if (!isHira(last) && !isHira(next[0])) return noKanjiCut ? Infinity : 5;
 	return Infinity;
 }
 
 // 1区切りを n 行に分け、行の長さをそろえる。最終行が3字未満にならないようにする
-function balance(text: string, max: number): string[] {
+function balance(text: string, max: number, noKanjiCut = false): string[] {
 	const tokens = text.match(TOKEN) ?? [];
 	const total = width(text);
 	if (total <= max) return [text];
@@ -63,7 +63,7 @@ function balance(text: string, max: number): string[] {
 					if (dp[j][k - 1] === Infinity) continue;
 					const w = pre[i] - pre[j];
 					if (w > max || w < 3) continue;
-					const bc = i === N ? 0 : breakCost(tokens[i - 1], tokens[i]);
+					const bc = i === N ? 0 : breakCost(tokens[i - 1], tokens[i], noKanjiCut);
 					if (bc === Infinity) continue;
 					const c = dp[j][k - 1] + (w - target) ** 2 + bc * 4;
 					if (c < dp[i][k]) {
@@ -86,7 +86,12 @@ function balance(text: string, max: number): string[] {
 
 // 「：」「？」で必ず改行し（記号は前の行に残す）、それぞれを行の長さをそろえて折り返す
 export function titleLines(title: string, max = 15): string[] {
-	return title.split(/(?<=[：:？?])/).flatMap((p) => balance(p.trim(), max));
+	const parts = title.split(/(?<=[：:？?])/).map((p) => p.trim());
+	const lines = parts.flatMap((p) => balance(p, max));
+	// 漢字の語の途中（「分｜配金」など）で切れたときは、3行以内で避けられるならそちらにする
+	const strict = parts.flatMap((p) => balance(p, max, true));
+	const cut = lines.some((l, i) => i < lines.length - 1 && breakCost(l, lines[i + 1]) === 5);
+	return cut && strict.length <= 3 && strict.every((l) => width(l) <= max) ? strict : lines;
 }
 
 export function ogSvg(opts: OgOpts) {
