@@ -51,3 +51,6 @@ description: 「6年でたたむマイクロ法人」の記事を書く・書き
 ### 6. 公開
 - 本人の了承後に `draft: false`、必要なら `src/consts.ts` の `NOINDEX` を false、`npm run build` で確認、コミット
 - push は本人が PowerShell で `git -C C:\Users\kenke\dev\tatamu-blog push`
+
+### 7. 投稿文を作る（公開と同じ日）
+- その記事の X 投稿3本と note 1本を `editorial/投稿文の基準.md` で作り、自動チェックと査読を通して投稿文書に入れる。投稿文書は2週間先まで埋める（`editorial/投稿予定.md` の週の型）
