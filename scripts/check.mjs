@@ -44,6 +44,8 @@ function readdirSafe(d) {
 }
 
 function commonChecks(f, where, text, { isPost }) {
+  // 使っていないことの宣言（本人の指摘 10-27）。記事・投稿とも使わない
+  if (/調べたうえで|使っていません|やっていません|相談していません/.test(text)) err(f, where, '「調べたうえで、自分では使っていません」の類は使わない。向く人と事実だけを書く');
   for (const term of PLAN_TERMS) {
     if (text.includes(term)) (isPost ? err : warn)(f, where, `計画の中だけの言葉「${term}」。初見の人に分かる言い方にする`);
   }
