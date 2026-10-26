@@ -120,7 +120,7 @@ function checkPostDoc(file) {
 function checkArticle(file) {
   const f = basename(file);
   let t = readFileSync(file, 'utf8');
-  t = t.replace(/^---[\s\S]*?\n---\n/, ''); // frontmatter
+  t = t.replace(/^---[\s\S]*?\r?\n---\r?\n/, ''); // frontmatter
   const lines = t.split(/\r?\n/);
   let inCode = false;
   lines.forEach((raw, i) => {
