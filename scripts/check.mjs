@@ -44,6 +44,10 @@ function readdirSafe(d) {
 }
 
 function commonChecks(f, where, text, { isPost }) {
+  // 広告に否定的な言い方（広告配置.md 最優先ルール）。文脈で判断するので警告
+  for (const w of ['必要ありません', '要りません', '頼まなくて', '頼む必要', '営業され', '売られ', '持ち帰れば', '元が取れ', '割高']) {
+    if (text.includes(w)) warn(f, where, `広告に否定的に読めないか「${w}」。広告の節とその前後なら書き換える`);
+  }
   // 使っていないことの宣言（本人の指摘 10-27）。記事・投稿とも使わない
   if (/調べたうえで|使っていません|やっていません|相談していません/.test(text)) err(f, where, '「調べたうえで、自分では使っていません」の類は使わない。向く人と事実だけを書く');
   for (const term of PLAN_TERMS) {
