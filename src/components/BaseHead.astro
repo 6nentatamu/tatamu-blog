@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { NOINDEX, SITE_TITLE } from '../consts';
+import { ADSENSE_CLIENT, NOINDEX, SITE_TITLE } from '../consts';
 
 interface Props {
 	title: string;
@@ -26,6 +26,8 @@ const fullTitle = title === SITE_TITLE ? title : `${title}｜${SITE_TITLE}`;
 <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href={new URL('rss.xml', Astro.site)} />
 {NOINDEX && <meta name="robots" content="noindex, nofollow" />}
 <meta name="google-site-verification" content="7A1AQfN-IMGNL9L7W1KTvIcdi1AHgB2wBfpaoTDhPKE" />
+<meta name="google-adsense-account" content={ADSENSE_CLIENT} />
+<script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`} crossorigin="anonymous"></script>
 <link rel="canonical" href={canonicalURL} />
 <title>{fullTitle}</title>
 <meta name="description" content={description} />

@@ -18,5 +18,8 @@ export const CONTACT_FORM_URL = 'https://forms.gle/htr6zHkPnBw14to88';
 
 // 6年ゲージ。今が何年目か（年が変わったら手で1つ進める）。記事の「この記事は○年目に書きました」もこれを使う。
 // 日・月・年月は出さない（品質基準 D1）。月次記事は frontmatter の year があればそちらを優先する。
+// アドセンスの運営者ID（2026-10-28 導入。自動広告で、配置はアドセンスの管理画面で決める）
+export const ADSENSE_CLIENT = 'ca-pub-3011738258100266';
+
 export const TOTAL_YEARS = 6;
 export const CURRENT_YEAR = 1;
