@@ -28,6 +28,7 @@ export const SERIES: Partial<Record<CategoryId, PlannedPost[]>> = {
 		{ title: '法人カード' },
 		{ title: '法人口座と個人口座の組み合わせ方' },
 		{ title: '会計・給与ソフトの選び方', slug: 'setup-2-kaikei' },
+		{ title: '申告を税理士に頼むか', slug: 'setup-6-zeirishi' },
 		{ title: 'つまずいた点とやり直し' },
 	],
 	operation: [
