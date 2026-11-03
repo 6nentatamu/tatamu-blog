@@ -1,6 +1,6 @@
 ---
 import AffBanner from './AffBanner.astro';
-// 記事ページのサイドバー（スマホでは本文の下）。使ったサービスを出す。
+// 記事ページのサイドバー（スマホでは本文の下）。使ったサービスを出し、書いた記事へ案内する。
 import { SERVICES } from '../data/services';
 import ProfileBox from './ProfileBox.astro';
 ---
@@ -15,14 +15,18 @@ import ProfileBox from './ProfileBox.astro';
 					<li><AffBanner html={s.bannerHtml} /></li>
 				) : (
 					<li>
-						<a
-							href={s.affiliateUrl ?? s.officialUrl}
-							rel={s.affiliateUrl ? 'sponsored noopener' : 'noopener'}
-							target="_blank"
-						>
-							{s.name}
-						</a>
-						<span>{s.group}</span>
+						{s.post ? (
+							<a href={`/posts/${s.post}/`}>{s.name}</a>
+						) : (
+							<a
+								href={s.affiliateUrl ?? s.officialUrl}
+								rel={s.affiliateUrl ? 'sponsored noopener' : 'noopener'}
+								target="_blank"
+							>
+								{s.name}
+							</a>
+						)}
+						<span>{s.group}・{s.post ? '使い方の記事へ' : '公式サイトへ'}</span>
 					</li>
 				),
 			)

@@ -8,7 +8,7 @@ const hasAffiliate = SERVICES.some((s) => s.affiliateUrl || s.bannerHtml);
 
 <Base
 	title="使ったサービス一覧"
-	description="マイクロ法人の設立と運営で実際に使った銀行・カード・会計ソフト・設立サービスの一覧と、何に使ったか。"
+	description="マイクロ法人の設立と運営で実際に使った銀行・カード・会計ソフト・設立サービス・証券口座の一覧と、何に使ったか。"
 >
 	<main class="container prose">
 		<h1>使ったサービス一覧</h1>
@@ -32,6 +32,7 @@ const hasAffiliate = SERVICES.some((s) => s.affiliateUrl || s.bannerHtml);
 							<p>{s.use}</p>
 							{s.bannerHtml && <div class="banner" set:html={s.bannerHtml} />}
 							<p class="links">
+								{s.post && <a href={`/posts/${s.post}/`}>選んだ理由と使い方を読む</a>}
 								<a
 									href={s.affiliateUrl ?? s.officialUrl}
 									rel={s.affiliateUrl ? 'sponsored noopener' : 'noopener'}
@@ -39,7 +40,6 @@ const hasAffiliate = SERVICES.some((s) => s.affiliateUrl || s.bannerHtml);
 								>
 									公式サイト
 								</a>
-								{s.post && <a href={`/posts/${s.post}/`}>選んだ理由を読む</a>}
 							</p>
 						</div>
 					))}
