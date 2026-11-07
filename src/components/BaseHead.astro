@@ -6,9 +6,11 @@ interface Props {
 	title: string;
 	description: string;
 	image?: string;
+	// 検索の対象から外すページ（記事が少ないタグなど）
+	noindex?: boolean;
 }
 
-const { title, description, image = '/og-default.png' } = Astro.props;
+const { title, description, image = '/og-default.png', noindex = false } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image, Astro.site);
 const fullTitle = title === SITE_TITLE ? title : `${title}｜${SITE_TITLE}`;
@@ -24,7 +26,7 @@ const fullTitle = title === SITE_TITLE ? title : `${title}｜${SITE_TITLE}`;
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <link rel="sitemap" href="/sitemap-index.xml" />
 <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href={new URL('rss.xml', Astro.site)} />
-{NOINDEX && <meta name="robots" content="noindex, nofollow" />}
+{NOINDEX ? <meta name="robots" content="noindex, nofollow" /> : noindex && <meta name="robots" content="noindex, follow" />}
 <meta name="google-site-verification" content="7A1AQfN-IMGNL9L7W1KTvIcdi1AHgB2wBfpaoTDhPKE" />
 <meta name="google-adsense-account" content={ADSENSE_CLIENT} />
 <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`} crossorigin="anonymous"></script>

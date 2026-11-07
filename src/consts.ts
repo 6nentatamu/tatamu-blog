@@ -23,3 +23,6 @@ export const ADSENSE_CLIENT = 'ca-pub-3011738258100266';
 
 export const TOTAL_YEARS = 6;
 export const CURRENT_YEAR = 1;
+
+// 記事がこの本数以下のタグページは検索の対象とサイトマップから外す（2026-11-07 AdSense「有用性の低いコンテンツ」対策。Google が読んだうえで登録しなかったため）
+export const THIN_TAG_MAX = 2;

@@ -10,14 +10,16 @@ interface Props {
 	image?: string;
 	// 前日譚のページ：「今年」の強調（珊瑚）を出さない
 	calm?: boolean;
+	// 検索の対象から外す（サイトマップからは astro.config.mjs で外す）
+	noindex?: boolean;
 }
-const { title, description, image, calm = false } = Astro.props;
+const { title, description, image, calm = false, noindex = false } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="ja">
 	<head>
-		<BaseHead title={title} description={description} image={image} />
+		<BaseHead title={title} description={description} image={image} noindex={noindex} />
 		<slot name="head" />
 	</head>
 	<body>

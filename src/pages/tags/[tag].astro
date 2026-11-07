@@ -2,6 +2,7 @@
 import PostList from '../../components/PostList.astro';
 import Base from '../../layouts/Base.astro';
 import { getPosts } from '../../lib/posts';
+import { THIN_TAG_MAX } from '../../consts';
 
 export async function getStaticPaths() {
 	const posts = await getPosts();
@@ -15,7 +16,7 @@ export async function getStaticPaths() {
 const { tag, posts } = Astro.props;
 ---
 
-<Base title={`#${tag}`} description={`「${tag}」に関する記事の一覧`}>
+<Base title={`#${tag}`} description={`「${tag}」に関する記事の一覧`} noindex={posts.length <= THIN_TAG_MAX}>
 	<main class="container prose">
 		<h1>#{tag}</h1>
 		<PostList posts={posts} />
