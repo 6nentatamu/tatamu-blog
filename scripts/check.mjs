@@ -129,6 +129,11 @@ function checkArticle(file) {
   const f = basename(file);
   let t = readFileSync(file, 'utf8');
   t = t.replace(/^---[\s\S]*?\r?\n---\r?\n/, ''); // frontmatter
+  // 広告の数（広告配置.md ルール1：本文は合計4か所まで。バナー・ボタンの枚数の上限はなし）
+  const adLinks = (t.match(/<AffLink\b[^>]*>/g) || []);
+  const adBanners = (t.match(/<AffBanner\b/g) || []).length;
+  const adTotal = adLinks.length + adBanners;
+  if (adTotal > 4) err(f, '', `広告が${adTotal}か所。本文は合計4か所まで（広告配置.md ルール1）`);
   const lines = t.split(/\r?\n/);
   let inCode = false;
   lines.forEach((raw, i) => {
