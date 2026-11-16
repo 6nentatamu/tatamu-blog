@@ -95,7 +95,7 @@ function checkPostDoc(file) {
   for (const t of threads) {
     const where = t.day.replace(/（.*/, '');
     const n = Object.keys(t.posts).length;
-    if (n !== 3) err(f, where, `スレッドが${n}投稿。3投稿にする（ルール8）`);
+    if (n !== 2) err(f, where, `スレッドが${n}投稿。2投稿にする（ルール8）`);
     for (const [k, body] of Object.entries(t.posts)) {
       const w = `${where} ${k}つ目`;
       const counted = body.replace(/<?https?:\/\/\S+?>?(?=\s|$)/g, 'x'.repeat(23));
@@ -108,15 +108,15 @@ function checkPostDoc(file) {
       }
     }
     const p1 = t.posts['1'] || '';
-    const p3 = t.posts['3'] || '';
+    const p3 = t.posts['2'] || ''; // URL は最後（2つ目）
     if (/^私[はの]/.test(p1)) err(f, `${where} 1つ目`, '「私は／私の」で始まっている（ルール11）');
     const tags = (p1.match(/#\S+/g) || []).filter((x) => x !== '#PR');
     if (tags.length < 1 || tags.length > 2) err(f, `${where} 1つ目`, `タグが${tags.length}個。#PR以外で1〜2個（ルール8）`);
     const url = p3.match(/tatamu-hojin\.com\/posts\/([\w-]+)/);
-    if (!url) err(f, `${where} 3つ目`, '記事のURLがない（ルール8）');
+    if (!url) err(f, `${where} 2つ目`, '記事のURLがない（ルール8）');
     else {
       const isPr = pr.has(url[1]);
-      if (!existsSync(join(POSTS_DIR, url[1] + '.mdx'))) err(f, `${where} 3つ目`, `記事 ${url[1]} が見つからない`);
+      if (!existsSync(join(POSTS_DIR, url[1] + '.mdx'))) err(f, `${where} 2つ目`, `記事 ${url[1]} が見つからない`);
       if (isPr && !p1.includes('#PR')) err(f, `${where} 1つ目`, `誘導先 ${url[1]} は広告入り。#PR を付ける`);
       if (!isPr && p1.includes('#PR')) err(f, `${where} 1つ目`, `誘導先 ${url[1]} は広告なし。#PR を外す`);
     }
