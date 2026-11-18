@@ -17,7 +17,7 @@ const list =
 		: seriesOrder(posts, cat.id as CategoryId);
 ---
 
-<Base title={cat.name} description={cat.lead}>
+<Base title={cat.name} description={cat.lead} noindex={list.length === 0}>
 	<main class="container prose">
 		<h1>{cat.name}</h1>
 		<p class="lead">{cat.lead}</p>
