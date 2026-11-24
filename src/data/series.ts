@@ -34,6 +34,9 @@ export const SERIES: Partial<Record<CategoryId, PlannedPost[]>> = {
 		{ title: 'つまずいた点とやり直し' },
 	],
 	operation: [
+		{ title: '旅費規程と車両借上規程', slug: 'operation-1-ryohi' },
+		{ title: '役員の業務記録を作らない理由', slug: 'operation-2-jittai' },
+		{ title: '書類の保存と電子帳簿保存法', slug: 'operation-3-hozon' },
 		{ title: '毎月の経理ルーチン' },
 		{ title: 'まとめ：マイクロ法人は得だったか' },
 	],
